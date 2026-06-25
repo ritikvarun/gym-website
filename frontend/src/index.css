@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Syne", sans-serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --color-neon-lime: #ccff00;
+  --color-neon-cyan: #00f0ff;
+  --color-neon-pink: #ff007f;
+  --color-dark-bg: #08080a;
+  --color-dark-surface: #0f0f12;
+  --color-dark-card: rgba(15, 15, 18, 0.65);
+  --color-dark-border: rgba(255, 255, 255, 0.08);
+}
+
+@utility text-glow-lime {
+  text-shadow: 0 0 15px rgba(204, 255, 0, 0.45);
+}
+
+@utility text-glow-cyan {
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.45);
+}
+
+@utility shadow-neon-lime {
+  box-shadow: 0 0 25px rgba(204, 255, 0, 0.25);
+}
+
+@utility shadow-neon-cyan {
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+}
+
+@utility shadow-glass {
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+@utility glass-card {
+  background: rgba(15, 15, 18, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+@utility glass-card-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  &:hover {
+    background: rgba(15, 15, 18, 0.75);
+    border-color: rgba(204, 255, 0, 0.3);
+    box-shadow: 0 12px 40px 0 rgba(204, 255, 0, 0.15);
+  }
+}
+
+@utility text-stroke {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+  color: transparent;
+}
+
+@utility text-stroke-neon {
+  -webkit-text-stroke: 1px rgba(204, 255, 0, 0.3);
+  color: transparent;
+}
+
+@utility grid-pattern {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #08080a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f1f27;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ccff00;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #08080a;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
