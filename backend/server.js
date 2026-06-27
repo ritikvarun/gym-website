@@ -185,9 +185,10 @@ const TransformationModel = mongoose.model('Transformation', transformationSchem
 const allowedOrigins = [
   'http://localhost:5173', // Frontend local
   'http://localhost:5174', // Admin Panel local
-  // Production Vercel URLs — deploy ke baad yahan apne actual URLs add karo
-  'https://musclecraft-gym.vercel.app',
-  'https://musclecraft-admin.vercel.app',
+  // Production Vercel URLs
+  'https://gym-website-pearl-three.vercel.app', // Frontend URL
+  'https://gym-website-n5zn.vercel.app',        // Admin URL
+
 ];
 
 app.use(cors({
