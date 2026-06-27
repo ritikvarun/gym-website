@@ -12,14 +12,17 @@ function AdminContext({children}) {
     const getAdmin = async () => {
       try {
            console.log("Fetching admin data...")
-           let result = await axios.get(serverUrl + "/api/user/getadmin",{withCredentials:true})
+           const token = localStorage.getItem('adminToken')
+           const headers = token ? { Authorization: `Bearer ${token}` } : {}
+           let result = await axios.get(serverUrl + "/api/user/getadmin", { headers, withCredentials: true })
 
       setAdminData(result.data)
       console.log("getAdmin result:", result.data)
       setLoading(false)
       } catch (error) {
         console.log("getAdmin error:", error.response?.data || error.message)
-        // Keep existing adminData instead of setting to null on error
+        // Set adminData to null on error so it redirects back to login if unauthorized
+        setAdminData(null)
         setLoading(false)
       }
     }

@@ -76,7 +76,7 @@ const CTA = () => {
         <img 
           ref={bgImageRef}
           src={gymFallback} 
-          alt="AURA Elite Workspace" 
+          alt="Muscle Craft Elite Workspace" 
           className="absolute -inset-10 w-[calc(100%+80px)] h-[calc(100%+80px)] object-cover object-center filter scale-105 opacity-25 brightness-50"
         />
         {/* Dark vignette overlays */}
@@ -92,7 +92,7 @@ const CTA = () => {
         
         {/* Subtitle Badge */}
         <div className="cta-reveal text-neon-lime text-xs font-bold uppercase tracking-widest mb-6 border border-neon-lime/20 px-4 py-1.5 rounded-full bg-neon-lime/5">
-          Begin Your Progression
+          1-Day Trial Pass — ₹200
         </div>
 
         {/* High-Impact Heading */}
@@ -102,8 +102,11 @@ const CTA = () => {
         </h2>
 
         {/* Subheadline description */}
-        <p className="cta-reveal text-gray-400 font-sans text-base md:text-xl leading-relaxed mb-12 max-w-xl">
-          Join AURA today and initiate your custom-engineered fitness and biometric transformation.
+        <p className="cta-reveal text-gray-400 font-sans text-base md:text-xl leading-relaxed mb-4 max-w-xl">
+          Experience our gym for one full day — equipment, trainers, everything included.
+        </p>
+        <p className="cta-reveal text-sm text-gray-500 mb-10 max-w-md">
+          Your <span className="text-neon-lime font-semibold">₹200 trial fee</span> gets fully adjusted toward your membership cost if you join any plan after the trial.
         </p>
 
         {/* Pulse Button Wrapper */}
@@ -118,7 +121,10 @@ const CTA = () => {
               href="#trial"
               className="relative px-8 py-5 rounded-2xl bg-neon-lime hover:bg-[#b0dc00] text-black text-sm font-extrabold uppercase tracking-widest transition-all duration-300 hover:scale-105 flex items-center gap-3 shadow-2xl hover:shadow-neon-lime/30 active:scale-95 group"
             >
-              Claim Your Free Trial
+              <span className="flex flex-col items-center">
+                <span>Book 1-Day Trial Pass</span>
+                <span className="text-[11px] font-bold opacity-80 tracking-widest">₹200 · Adjustable in Membership</span>
+              </span>
               <FiArrowRight className="text-base transition-transform duration-300 group-hover:translate-x-1.5" />
             </a>
           </Magnetic>

@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FiInstagram, FiTwitter, FiAward } from 'react-icons/fi'
 import coachViktor from '../assets/coach_viktor.webp'
 import coachSeraphina from '../assets/coach_seraphina.webp'
 import coachMarcus from '../assets/coach_marcus.webp'
+import { API_URL } from '../config'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -12,47 +13,10 @@ gsap.registerPlugin(ScrollTrigger)
 const Trainers = () => {
   const sectionRef = useRef(null)
   const cardsContainerRef = useRef(null)
+  const [coaches, setCoaches] = useState([])
+  const [dataLoaded, setDataLoaded] = useState(false)
 
-  useEffect(() => {
-    // Reveal section headers
-    gsap.fromTo('.trainers-reveal',
-      { opacity: 0, y: 40 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-          toggleActions: 'play none none reverse'
-        }
-      }
-    )
-
-    // Stagger reveal of coach cards
-    if (cardsContainerRef.current) {
-      const cards = cardsContainerRef.current.children
-      gsap.fromTo(cards,
-        { opacity: 0, y: 60, scale: 0.95 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 1.1,
-          stagger: 0.15,
-          ease: 'power4.out',
-          scrollTrigger: {
-            trigger: cardsContainerRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      )
-    }
-  }, [])
-
-  const coaches = [
+  const fallbackCoaches = [
     {
       name: 'Viktor Vance',
       role: 'Strength & Hypertrophy Director',
@@ -103,6 +67,65 @@ const Trainers = () => {
     }
   ]
 
+  useEffect(() => {
+    fetch(`${API_URL}/api/trainers`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setCoaches(data)
+        } else {
+          setCoaches(fallbackCoaches)
+        }
+        setDataLoaded(true)
+      })
+      .catch(err => {
+        console.log("Using default fallback coaches:", err.message)
+        setCoaches(fallbackCoaches)
+        setDataLoaded(true)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!dataLoaded) return
+
+    // Reveal section headers
+    gsap.fromTo('.trainers-reveal',
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    )
+
+    // Stagger reveal of coach cards
+    if (cardsContainerRef.current) {
+      const cards = cardsContainerRef.current.children
+      gsap.fromTo(cards,
+        { opacity: 0, y: 60, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.1,
+          stagger: 0.15,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: cardsContainerRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      )
+    }
+  }, [dataLoaded])
+
   return (
     <section 
       ref={sectionRef}
@@ -119,7 +142,7 @@ const Trainers = () => {
         <div className="trainers-reveal text-center max-w-2xl mx-auto mb-20">
           <div className="text-neon-lime text-xs font-bold uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-neon-lime inline-block animate-pulse"></span>
-            Aura Coaching Council
+            Muscle Craft Coaching Council
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-none mb-6">
             ELITE <span className="text-stroke-neon">COACHES.</span> <br />
@@ -184,7 +207,7 @@ const Trainers = () => {
 
                   {/* Certifications list */}
                   <ul className="flex flex-col gap-2 mb-6">
-                    {coach.certs.map((cert, certIdx) => (
+                    {coach.certs?.map((cert, certIdx) => (
                       <li key={certIdx} className="text-[10px] text-gray-400 font-sans leading-snug flex items-start gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-white/40 mt-1 flex-shrink-0"></span>
                         {cert}
@@ -194,20 +217,28 @@ const Trainers = () => {
 
                   {/* Social Handles */}
                   <div className="flex gap-4">
-                    <a 
-                      href={coach.socials.instagram} 
-                      className="text-gray-500 hover:text-white transition-colors duration-300"
-                      aria-label={`${coach.name} Instagram`}
-                    >
-                      <FiInstagram className="text-base" />
-                    </a>
-                    <a 
-                      href={coach.socials.twitter} 
-                      className="text-gray-500 hover:text-white transition-colors duration-300"
-                      aria-label={`${coach.name} Twitter`}
-                    >
-                      <FiTwitter className="text-base" />
-                    </a>
+                    {coach.socials?.instagram && coach.socials.instagram !== '#' && (
+                      <a 
+                        href={coach.socials.instagram} 
+                        className="text-gray-500 hover:text-white transition-colors duration-300"
+                        aria-label={`${coach.name} Instagram`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <FiInstagram className="text-base" />
+                      </a>
+                    )}
+                    {coach.socials?.twitter && coach.socials.twitter !== '#' && (
+                      <a 
+                        href={coach.socials.twitter} 
+                        className="text-gray-500 hover:text-white transition-colors duration-300"
+                        aria-label={`${coach.name} Twitter`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <FiTwitter className="text-base" />
+                      </a>
+                    )}
                   </div>
 
                 </div>

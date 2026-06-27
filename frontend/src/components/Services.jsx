@@ -128,7 +128,7 @@ const Services = () => {
         <div className="services-reveal text-center max-w-2xl mx-auto mb-20">
           <div className="text-neon-cyan text-xs font-bold uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-neon-cyan inline-block animate-pulse"></span>
-            Aura Capabilities
+            Muscle Craft Capabilities
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-none mb-6">
             EXCLUSIVE <span className="text-stroke-neon">SERVICES</span> <br className="hidden sm:inline" />

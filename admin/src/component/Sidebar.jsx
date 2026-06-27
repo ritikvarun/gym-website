@@ -4,7 +4,7 @@ import { FaRegListAlt } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { MdDashboard } from "react-icons/md";
 import { TbArrowBackUp } from "react-icons/tb";
-import { FiImage } from "react-icons/fi";
+import { FiImage, FiActivity } from "react-icons/fi";
 import { useNavigate, useLocation } from 'react-router-dom';
 
 function Sidebar() {
@@ -13,11 +13,11 @@ function Sidebar() {
 
     const links = [
         { path: '/', label: 'Dashboard', icon: <MdDashboard /> },
-        { path: '/add', label: 'Add Product', icon: <IoIosAddCircleOutline /> },
-        { path: '/lists', label: 'Products', icon: <FaRegListAlt /> },
-        { path: '/orders', label: 'Orders', icon: <SiTicktick /> },
-        { path: '/returns', label: 'Returns', icon: <TbArrowBackUp /> },
-        { path: '/banners', label: 'Site Images', icon: <FiImage /> },
+        { path: '/trainers', label: 'Trainers', icon: <FaRegListAlt /> },
+        { path: '/gallery', label: 'Gallery', icon: <FiImage /> },
+        { path: '/classes', label: 'Classes', icon: <IoIosAddCircleOutline /> },
+        { path: '/transformations', label: 'Transformations', icon: <FiActivity /> },
+        { path: '/settings', label: 'Settings', icon: <SiTicktick /> },
     ]
 
     return (

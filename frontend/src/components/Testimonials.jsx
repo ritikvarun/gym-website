@@ -20,7 +20,7 @@ const Testimonials = () => {
     {
       name: 'Dominic Vance',
       role: 'CEO, Vance Media',
-      quote: "Aura is in a league of its own. The personal coaches are actual sports scientists who design programs backed by biometrics. My strength profiles and daily productivity indicators have never been higher.",
+      quote: "Muscle Craft is in a league of its own. The personal coaches are actual sports scientists who design programs backed by biometrics. My strength profiles and daily productivity indicators have never been higher.",
       program: 'HyperPhysique Member',
       accentColor: '#ccff00', // Neon Lime
       image: clientDominic,
@@ -38,7 +38,7 @@ const Testimonials = () => {
     {
       name: 'Dr. Alexander Cross',
       role: 'Orthopedic Surgeon',
-      quote: "As a surgeon, I am highly critical of biomechanics and joint stress. Aura's strength platforms, safety monitoring, and physical rehabilitation specialists got me benching pain-free after shoulder surgery.",
+      quote: "As a surgeon, I am highly critical of biomechanics and joint stress. Muscle Craft's strength platforms, safety monitoring, and physical rehabilitation specialists got me benching pain-free after shoulder surgery.",
       program: 'Athletic Apex Member',
       accentColor: '#ff007f', // Neon Pink
       image: clientAlexander,
@@ -129,7 +129,7 @@ const Testimonials = () => {
             <span className="text-stroke-neon">ELITE MEMBERS</span>
           </h2>
           <p className="text-gray-400 font-sans text-sm md:text-base leading-relaxed">
-            Discover how Aura's biometric methodologies, elite facilities, and scientific coaching transform real-world health and performance parameters.
+            Discover how Muscle Craft's biometric methodologies, elite facilities, and scientific coaching transform real-world health and performance parameters.
           </p>
         </div>
 

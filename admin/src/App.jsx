@@ -1,33 +1,30 @@
 import React, { useContext } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
-import Add from './pages/Add'
-import Lists from './pages/Lists'
-import Orders from './pages/Orders'
-import Returns from './pages/Returns'
-import Banners from './pages/Banners'
+import Trainers from './pages/Trainers'
+import Gallery from './pages/Gallery'
+import Classes from './pages/Classes'
+import Settings from './pages/Settings'
 import Login from './pages/Login'
+import Transformations from './pages/Transformations'
 import { adminDataContext } from './context/AdminContext'
-  import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   let {adminData} = useContext(adminDataContext)
   return (
-
     <>
       <ToastContainer />
-    {!adminData ? <Login/> : <>
-
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/add' element={<Add/>}/>
-        <Route path='/lists' element={<Lists/>}/>
-        <Route path='/orders' element={<Orders/>}/>
-        <Route path='/returns' element={<Returns/>}/>
-        <Route path='/banners' element={<Banners/>}/>
-        <Route path='/login' element={<Login/>}/>
-      </Routes>
-      </>
+      {!adminData ? <Login/> : 
+        <Routes>
+          <Route path='/' element={<Home/>}/>
+          <Route path='/trainers' element={<Trainers/>}/>
+          <Route path='/gallery' element={<Gallery/>}/>
+          <Route path='/classes' element={<Classes/>}/>
+          <Route path='/transformations' element={<Transformations/>}/>
+          <Route path='/settings' element={<Settings/>}/>
+          <Route path='/login' element={<Login/>}/>
+        </Routes>
       }
     </>
   )

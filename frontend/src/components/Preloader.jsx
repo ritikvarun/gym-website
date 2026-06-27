@@ -78,7 +78,7 @@ const Preloader = ({ onComplete }) => {
             <RiFlashlightLine className="text-black text-2xl font-bold" />
           </div>
           <span className="font-display text-3xl font-extrabold tracking-wider text-white">
-            AURA<span className="text-neon-lime">.</span>
+            Muscle Craft<span className="text-neon-lime">.</span>
           </span>
         </div>
 
@@ -110,7 +110,7 @@ const Preloader = ({ onComplete }) => {
         SYS.LOC: //BH_CA_90210
       </div>
       <div className="absolute bottom-8 right-12 text-[8px] text-gray-600 font-mono tracking-widest hidden md:block">
-        SECURE: AURA_MAIN_FRAME // 2026
+        SECURE: MUSCLE_CRAFT_MAIN_FRAME // 2026
       </div>
     </div>
   )

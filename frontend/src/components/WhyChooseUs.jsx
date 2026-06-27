@@ -115,7 +115,7 @@ const WhyChooseUs = () => {
         <div className="why-reveal text-center max-w-2xl mx-auto mb-20">
           <div className="text-neon-pink text-xs font-bold uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-neon-pink inline-block animate-pulse"></span>
-            Why Choose Aura
+            Why Choose Muscle Craft
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-none mb-6">
             THE STANDARD OF <span className="text-stroke-neon">EXCELLENCE</span> <br />

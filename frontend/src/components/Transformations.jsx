@@ -9,6 +9,8 @@ import afterJulian from '../assets/after_julian.webp'
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
 
+import { API_URL } from '../config'
+
 const BeforeAfterSlider = ({ beforeImg, afterImg, accentColor }) => {
   const [sliderPos, setSliderPos] = useState(50)
   const containerRef = useRef(null)
@@ -97,10 +99,69 @@ const BeforeAfterSlider = ({ beforeImg, afterImg, accentColor }) => {
   )
 }
 
+const fallbackStories = [
+  {
+    name: 'Marcus Vance',
+    program: 'HyperPhysique hypertrophy',
+    duration: '16 Weeks Program',
+    tagline: 'Rebuilt with Lean Muscle mass',
+    quote: "The scientific training paradigms at Muscle Craft completely transformed my athletic build. My coach calibrated every single block to bypass genetic plateaus safely.",
+    accentColor: '#ccff00', // Neon Lime
+    image: afterMarcus,
+    stats: [
+      { label: 'Lean Mass Gained', value: '+6.2 kg' },
+      { label: 'Body Fat Reduced', value: '-12.5%' },
+      { label: 'Bench Press Max', value: '+45 kg' }
+    ]
+  },
+  {
+    name: 'Elena Rostova',
+    program: 'Metcon Redline engine',
+    duration: '12 Weeks Program',
+    tagline: 'Metabolic Redesign and VO2 Max',
+    quote: "I signed up at Muscle Craft to sharpen my cardiovascular output, but I walked away with a brand-new engine. The conditioning framework reshaped my lifestyle.",
+    accentColor: '#00f0ff', // Neon Cyan
+    image: afterElena,
+    stats: [
+      { label: 'Weight Optimisation', value: '-14.8 kg' },
+      { label: 'VO2 Max Improvement', value: '+38%' },
+      { label: 'Resting Heart Rate', value: '-15 bpm' }
+    ]
+  },
+  {
+    name: 'Julian Hayes',
+    program: 'Athletic Apex resilience',
+    duration: '24 Weeks Program',
+    tagline: 'Joint Performance & Rehab',
+    quote: "After a severe knee injury, I assumed my competitive days were over. Muscle Craft's biomechanics-focused recovery programming got me moving stronger than ever.",
+    accentColor: '#ff007f', // Neon Pink
+    image: afterJulian,
+    stats: [
+      { label: 'Deadlift Capacity', value: '+75 kg' },
+      { label: 'Vertical Jump Gain', value: '+12 cm' },
+      { label: 'Pain Index Decline', value: '-90%' }
+    ]
+  }
+]
+
 const Transformations = () => {
+  const [stories, setStories] = useState(fallbackStories)
   const [activeSlide, setActiveSlide] = useState(0)
   const sectionRef = useRef(null)
   const cardRef = useRef(null)
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/transformations`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setStories(data)
+        }
+      })
+      .catch(err => {
+        console.log("Using default fallback stories:", err.message)
+      })
+  }, [])
 
   useEffect(() => {
     // ScrollReveal for Section Headers
@@ -120,52 +181,7 @@ const Transformations = () => {
     )
   }, [])
 
-  const stories = [
-    {
-      name: 'Marcus Vance',
-      program: 'HyperPhysique hypertrophy',
-      duration: '16 Weeks Program',
-      tagline: 'Rebuilt with Lean Muscle mass',
-      quote: "The scientific training paradigms at Aura completely transformed my athletic build. My coach calibrated every single block to bypass genetic plateaus safely.",
-      accentColor: '#ccff00', // Neon Lime
-      image: afterMarcus,
-      stats: [
-        { label: 'Lean Mass Gained', value: '+6.2 kg' },
-        { label: 'Body Fat Reduced', value: '-12.5%' },
-        { label: 'Bench Press Max', value: '+45 kg' }
-      ]
-    },
-    {
-      name: 'Elena Rostova',
-      program: 'Metcon Redline engine',
-      duration: '12 Weeks Program',
-      tagline: 'Metabolic Redesign and VO2 Max',
-      quote: "I signed up at Aura to sharpen my cardiovascular output, but I walked away with a brand-new engine. The conditioning framework reshaped my lifestyle.",
-      accentColor: '#00f0ff', // Neon Cyan
-      image: afterElena,
-      stats: [
-        { label: 'Weight Optimisation', value: '-14.8 kg' },
-        { label: 'VO2 Max Improvement', value: '+38%' },
-        { label: 'Resting Heart Rate', value: '-15 bpm' }
-      ]
-    },
-    {
-      name: 'Julian Hayes',
-      program: 'Athletic Apex resilience',
-      duration: '24 Weeks Program',
-      tagline: 'Joint Performance & Rehab',
-      quote: "After a severe knee injury, I assumed my competitive days were over. Aura's biomechanics-focused recovery programming got me moving stronger than ever.",
-      accentColor: '#ff007f', // Neon Pink
-      image: afterJulian,
-      stats: [
-        { label: 'Deadlift Capacity', value: '+75 kg' },
-        { label: 'Vertical Jump Gain', value: '+12 cm' },
-        { label: 'Pain Index Decline', value: '-90%' }
-      ]
-    }
-  ]
-
-  const current = stories[activeSlide]
+  const current = stories[activeSlide] || fallbackStories[0]
 
   const handleNext = () => {
     gsap.to(cardRef.current, {
@@ -215,7 +231,7 @@ const Transformations = () => {
         <div className="trans-reveal text-center max-w-2xl mx-auto mb-20">
           <div className="text-neon-lime text-xs font-bold uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-neon-lime inline-block animate-pulse"></span>
-            Aura Success Stories
+            Muscle Craft Success Stories
           </div>
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-none mb-6">
             REAL RESULTS. <br className="sm:hidden" />
@@ -232,8 +248,8 @@ const Transformations = () => {
           {/* Left Side: BeforeAfterSlider widget */}
           <div className="lg:col-span-5 w-full md:max-w-md lg:max-w-none mx-auto">
             <BeforeAfterSlider 
-              beforeImg={current.image}
-              afterImg={current.image}
+              beforeImg={current.beforeImage || current.image}
+              afterImg={current.afterImage || current.image}
               accentColor={current.accentColor}
             />
           </div>

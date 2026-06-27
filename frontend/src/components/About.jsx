@@ -126,7 +126,7 @@ const About = () => {
               <img 
                 ref={imageRef}
                 src={aboutGym} 
-                alt="AURA Luxury Gym Interior" 
+                alt="Muscle Craft Gym Interior" 
                 className="w-full h-full object-cover object-center scale-125"
               />
             </div>
@@ -144,7 +144,7 @@ const About = () => {
             {/* Section Tagline */}
             <div className="about-reveal text-neon-lime text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-neon-lime inline-block animate-pulse"></span>
-              The Aura Sanctuary
+              The Muscle Craft Sanctuary
             </div>
 
             {/* Section Title */}
@@ -155,7 +155,7 @@ const About = () => {
 
             {/* Description */}
             <p className="about-reveal text-gray-400 font-sans text-base md:text-lg leading-relaxed mb-10 max-w-2xl">
-              At Aura, we believe fitness is not a routine—it is a pursuit of refinement. 
+              At Muscle Craft, we believe fitness is not a routine—it is a pursuit of refinement. 
               We have constructed a dark-luxury sanctuary where sport science meets peak aesthetic elegance. 
               Our mission is to guide you on a transformative path through custom programming, state-of-the-art training tech, and a community of high-achievers.
             </p>

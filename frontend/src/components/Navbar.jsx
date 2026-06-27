@@ -45,14 +45,14 @@ const Navbar = () => {
               <RiFlashlightLine className="text-black text-xl font-bold" />
             </div>
             <span className="font-display text-2xl font-extrabold tracking-wider text-white">
-              AURA<span className="text-neon-lime">.</span>
+              Muscle Craft<span className="text-neon-lime">.</span>
             </span>
           </a>
         </Magnetic>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          {['Home', 'Programs', 'Services', 'Trainers', 'Pricing', 'About'].map((link) => (
+          {['Home', 'Programs', 'Services', 'Trainers', 'Pricing', 'Gallery', 'About'].map((link) => (
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
@@ -67,19 +67,11 @@ const Navbar = () => {
         {/* Action Buttons */}
         <div className="hidden md:flex items-center gap-4">
           <Magnetic>
-            <a 
-              href="#trial" 
-              className="px-5 py-2.5 rounded-full border border-white/10 text-sm font-semibold hover:border-white/30 text-white transition-all duration-300"
-            >
-              Client Portal
-            </a>
-          </Magnetic>
-          <Magnetic>
             <a
               href="#join"
               className="px-6 py-2.5 rounded-full bg-neon-lime hover:bg-[#b0dc00] text-black text-sm font-bold shadow-lg shadow-neon-lime/10 hover:shadow-neon-lime/30 transition-all duration-300 hover:-translate-y-0.5"
             >
-              Join Aura
+              Join Club
             </a>
           </Magnetic>
         </div>
@@ -103,7 +95,7 @@ const Navbar = () => {
         }`}
       >
         <div className="flex flex-col gap-6">
-          {['Home', 'Programs', 'Services', 'Trainers', 'Pricing', 'About'].map((link, idx) => (
+          {['Home', 'Programs', 'Services', 'Trainers', 'Pricing', 'Gallery', 'About'].map((link, idx) => (
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
@@ -118,18 +110,11 @@ const Navbar = () => {
 
         <div className="flex flex-col gap-4">
           <a
-            href="#trial"
-            onClick={() => setIsOpen(false)}
-            className="w-full text-center py-4 rounded-xl border border-white/10 font-semibold text-white hover:bg-white/5 transition-all duration-300"
-          >
-            Client Portal
-          </a>
-          <a
             href="#join"
             onClick={() => setIsOpen(false)}
             className="w-full text-center py-4 rounded-xl bg-neon-lime font-extrabold text-black hover:bg-[#b0dc00] shadow-lg shadow-neon-lime/10 transition-all duration-300"
           >
-            Join Aura
+            Join Club
           </a>
         </div>
       </div>

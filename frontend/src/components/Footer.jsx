@@ -1,10 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FiInstagram, FiTwitter, FiYoutube, FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi'
 import { RiFlashlightLine } from 'react-icons/ri'
+import { API_URL } from '../config'
 
 const Footer = () => {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const [settings, setSettings] = useState({
+    gymName: "Muscle Craft Fitness Club",
+    contactEmail: "info@musclecraft.com",
+    contactPhone: "+1 (555) 900-MCFC",
+    contactAddress: "128 Peak Avenue, Suite 400, Beverly Hills, CA 90210"
+  })
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/settings`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.gymName) {
+          setSettings(data)
+        }
+      })
+      .catch(err => {
+        console.log("Using default footer fallback settings:", err.message)
+      })
+  }, [])
 
   const handleSubscribe = (e) => {
     e.preventDefault()
@@ -26,15 +46,15 @@ const Footer = () => {
         {/* Main Grid: 4 Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 mb-16">
           
-          {/* Column 1: Brand & Brief (Spans 4) */}
+          {/* Column 1: Brand & Brief */}
           <div className="lg:col-span-4 flex flex-col gap-6 text-left">
             {/* Logo */}
             <a href="#" className="flex items-center gap-2 group self-start">
               <div className="w-9 h-9 rounded-lg bg-neon-lime flex items-center justify-center shadow-lg shadow-neon-lime/20 group-hover:scale-105 transition-transform duration-300">
                 <RiFlashlightLine className="text-black text-xl font-bold" />
               </div>
-              <span className="font-display text-2xl font-extrabold tracking-wider text-white">
-                AURA<span className="text-neon-lime">.</span>
+              <span className="font-display text-2xl font-extrabold tracking-wider text-white uppercase">
+                {settings.gymName}<span className="text-neon-lime">.</span>
               </span>
             </a>
 
@@ -69,7 +89,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Column 2: Navigation Links (Spans 2) */}
+          {/* Column 2: Navigation Links */}
           <div className="lg:col-span-2 flex flex-col gap-6 text-left">
             <h4 className="text-xs font-bold uppercase tracking-widest text-white border-l-2 border-neon-lime pl-3">
               Explore
@@ -96,7 +116,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Column 3: Contact & Hours (Spans 3) */}
+          {/* Column 3: Contact & Hours */}
           <div className="lg:col-span-3 flex flex-col gap-6 text-left">
             <h4 className="text-xs font-bold uppercase tracking-widest text-white border-l-2 border-neon-cyan pl-3">
               Information
@@ -107,19 +127,19 @@ const Footer = () => {
               <div className="flex items-start gap-3">
                 <FiMapPin className="text-neon-cyan text-base mt-0.5 flex-shrink-0" />
                 <span className="text-xs text-gray-500 leading-relaxed font-sans">
-                  128 Peak Avenue, Suite 400,<br />Beverly Hills, CA 90210
+                  {settings.contactAddress}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <FiPhone className="text-neon-cyan text-base flex-shrink-0" />
-                <a href="tel:+13109002872" className="text-xs text-gray-500 hover:text-white transition-colors duration-300 font-sans">
-                  +1 (310) 900-AURA
+                <a href={`tel:${settings.contactPhone}`} className="text-xs text-gray-500 hover:text-white transition-colors duration-300 font-sans">
+                  {settings.contactPhone}
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <FiMail className="text-neon-cyan text-base flex-shrink-0" />
-                <a href="mailto:concierge@auraathletic.com" className="text-xs text-gray-500 hover:text-white transition-colors duration-300 font-sans">
-                  concierge@auraathletic.com
+                <a href={`mailto:${settings.contactEmail}`} className="text-xs text-gray-500 hover:text-white transition-colors duration-300 font-sans">
+                  {settings.contactEmail}
                 </a>
               </div>
             </div>
@@ -145,13 +165,13 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Column 4: Newsletter Box (Spans 3) */}
+          {/* Column 4: Newsletter Box */}
           <div className="lg:col-span-3 flex flex-col gap-6 text-left">
             <h4 className="text-xs font-bold uppercase tracking-widest text-white border-l-2 border-neon-pink pl-3">
               Newsletter
             </h4>
             <p className="text-xs text-gray-500 leading-relaxed font-sans">
-              Subscribe to the AURA Spectrum to receive custom fitness science research, recovery guides, and club insights.
+              Subscribe to the Muscle Craft newsletter to receive custom fitness science research, recovery guides, and club insights.
             </p>
 
             {/* Subscription Form */}
@@ -187,7 +207,7 @@ const Footer = () => {
         {/* Footer Strip */}
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
-            &copy; {new Date().getFullYear()} AURA ATHLETIC CLUB. ALL RIGHTS RESERVED.
+            &copy; {new Date().getFullYear()} {settings.gymName} ATHLETIC CLUB. ALL RIGHTS RESERVED.
           </p>
           <div className="flex gap-6 text-[10px] font-bold uppercase tracking-widest">
             <a href="#privacy" className="text-gray-600 hover:text-white transition-colors duration-300">Privacy Policy</a>

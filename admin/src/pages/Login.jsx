@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import logo from '../assets/shopX.png'
+
 import { IoEyeOutline, IoEye } from "react-icons/io5";
 import axios from 'axios'
 import { authDataContext } from '../context/AuthContext';
@@ -21,6 +21,9 @@ function Login() {
         e.preventDefault()
         try {
             const result = await axios.post(serverUrl + '/api/auth/adminlogin', { email, password }, { withCredentials: true })
+            if (result.data.success && result.data.token) {
+                localStorage.setItem('adminToken', result.data.token)
+            }
             toast.success("Admin Login Successful")
             getAdmin()
             navigate("/")
@@ -36,10 +39,10 @@ function Login() {
 
                 {/* Header */}
                 <div className='flex flex-col items-center pt-[36px] pb-[10px] gap-[8px]'>
-                    <img src={logo} alt="ShopX" className='w-[110px]' />
-                    <span className='text-[11px] font-semibold text-gray-400 uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-full'>Admin Panel</span>
+                    <div className='text-4xl font-black text-black tracking-tight uppercase'>Muscle Craft</div>
+                    <span className='text-[11px] font-semibold text-gray-400 uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-full'>Gym Customizer</span>
                     <h1 className='text-gray-900 text-[20px] font-bold mt-[4px]'>Admin Login</h1>
-                    <p className='text-gray-400 text-[13px]'>Sign in to manage your store</p>
+                    <p className='text-gray-400 text-[13px]'>Sign in to customize your gym website</p>
                 </div>
 
                 {/* Form */}
@@ -49,7 +52,7 @@ function Login() {
                             <label className='text-[12px] font-semibold text-gray-500 uppercase tracking-wider mb-[6px] block'>Email</label>
                             <input
                                 type="email"
-                                placeholder='admin@shopx.com'
+                                placeholder='admin@musclecraft.com'
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className='w-full h-[46px] rounded-xl px-[16px] text-gray-800 text-[14px] placeholder-gray-300 outline-none focus:ring-2 focus:ring-gray-300 bg-gray-50'

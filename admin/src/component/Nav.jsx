@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import logo from "../assets/shopX.png"
+
 import axios from 'axios'
 import { authDataContext } from '../context/AuthContext'
 import { adminDataContext } from '../context/AdminContext'
@@ -14,6 +14,7 @@ function Nav() {
     const logOut = async () => {
         try {
             await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
+            localStorage.removeItem('adminToken')
             toast.success("Logged out successfully")
             getAdmin()
             navigate("/login")
@@ -26,8 +27,8 @@ function Nav() {
     return (
         <div className='w-full h-[64px] bg-white border-b border-gray-200 z-[60] fixed top-0 flex items-center justify-between px-[30px] shadow-sm'>
             <div className='flex items-center gap-[10px] cursor-pointer' onClick={() => navigate("/")}>
-                <img src={logo} alt="ShopX" className='w-[130px]' />
-                <span className='text-[11px] font-semibold text-gray-400 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded-full'>Admin</span>
+                <span className='text-2xl font-black text-black tracking-tight uppercase'>Muscle Craft</span>
+                <span className='text-[11px] font-semibold text-gray-400 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded-full'>Gym Admin</span>
             </div>
             <button
                 onClick={logOut}

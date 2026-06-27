@@ -1,15 +1,81 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { FiZap, FiActivity, FiTarget, FiArrowRight } from 'react-icons/fi'
+import { FiZap, FiActivity, FiTarget, FiShield, FiArrowRight } from 'react-icons/fi'
+import { API_URL } from '../config'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const Programs = () => {
   const sectionRef = useRef(null)
   const cardsRef = useRef(null)
+  const [programList, setProgramList] = useState([])
+  const [dataLoaded, setDataLoaded] = useState(false)
+
+  const fallbackPrograms = [
+    {
+      num: '01',
+      title: 'HyperPhysique',
+      desc: 'High-intensity muscle hypertrophy training utilizing advanced progressive overload principles and premium strength equipment.',
+      iconName: 'FiZap',
+      accent: 'group-hover:border-neon-lime',
+      textAccent: 'text-neon-lime',
+      glow: 'shadow-neon-lime/5 group-hover:shadow-neon-lime/15',
+      features: ['Strength coaching', 'Body composition scans', 'Hypertrophy program']
+    },
+    {
+      num: '02',
+      title: 'Metcon Redline',
+      desc: 'Uncompromising cardiovascular conditioning and high-speed engine development. Test your physical and mental thresholds.',
+      iconName: 'FiActivity',
+      accent: 'group-hover:border-neon-cyan',
+      textAccent: 'text-neon-cyan',
+      glow: 'shadow-neon-cyan/5 group-hover:shadow-neon-cyan/15',
+      features: ['HIIT circuit modules', 'VO2 max conditioning', 'Metabolic custom tracking']
+    },
+    {
+      num: '03',
+      title: 'Athletic Apex',
+      desc: 'Power, speed, multi-directional agility, and joint resilience program built specifically to enhance real-world sport performance.',
+      iconName: 'FiTarget',
+      accent: 'group-hover:border-neon-pink',
+      textAccent: 'text-neon-pink',
+      glow: 'shadow-neon-pink/5 group-hover:shadow-neon-pink/15',
+      features: ['Agility matrix training', 'Explosive plyometrics', 'Injury prevention protocol']
+    }
+  ]
+
+  const getIconComponent = (name) => {
+    switch (name) {
+      case 'FiZap': return FiZap;
+      case 'FiActivity': return FiActivity;
+      case 'FiTarget': return FiTarget;
+      case 'FiShield': return FiShield;
+      default: return FiZap;
+    }
+  }
 
   useEffect(() => {
+    fetch(`${API_URL}/api/programs`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setProgramList(data)
+        } else {
+          setProgramList(fallbackPrograms)
+        }
+        setDataLoaded(true)
+      })
+      .catch(err => {
+        console.log("Using default fallback programs:", err.message)
+        setProgramList(fallbackPrograms)
+        setDataLoaded(true)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!dataLoaded) return
+
     const cards = cardsRef.current.children
 
     // Section title trigger
@@ -45,40 +111,7 @@ const Programs = () => {
         }
       }
     )
-  }, [])
-
-  const programList = [
-    {
-      num: '01',
-      title: 'HyperPhysique',
-      desc: 'High-intensity muscle hypertrophy training utilizing advanced progressive overload principles and premium strength equipment.',
-      icon: FiZap,
-      accent: 'group-hover:border-neon-lime',
-      textAccent: 'text-neon-lime',
-      glow: 'shadow-neon-lime/5 group-hover:shadow-neon-lime/15',
-      features: ['Strength coaching', 'Body composition scans', 'Hypertrophy program']
-    },
-    {
-      num: '02',
-      title: 'Metcon Redline',
-      desc: 'Uncompromising cardiovascular conditioning and high-speed engine development. Test your physical and mental thresholds.',
-      icon: FiActivity,
-      accent: 'group-hover:border-neon-cyan',
-      textAccent: 'text-neon-cyan',
-      glow: 'shadow-neon-cyan/5 group-hover:shadow-neon-cyan/15',
-      features: ['HIIT circuit modules', 'VO2 max conditioning', 'Metabolic custom tracking']
-    },
-    {
-      num: '03',
-      title: 'Athletic Apex',
-      desc: 'Power, speed, multi-directional agility, and joint resilience program built specifically to enhance real-world sport performance.',
-      icon: FiTarget,
-      accent: 'group-hover:border-neon-pink',
-      textAccent: 'text-neon-pink',
-      glow: 'shadow-neon-pink/5 group-hover:shadow-neon-pink/15',
-      features: ['Agility matrix training', 'Explosive plyometrics', 'Injury prevention protocol']
-    }
-  ]
+  }, [dataLoaded])
 
   return (
     <section 
@@ -111,7 +144,7 @@ const Programs = () => {
           className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
         >
           {programList.map((prog, index) => {
-            const Icon = prog.icon
+            const Icon = getIconComponent(prog.iconName)
             return (
               <div 
                 key={index}
@@ -140,7 +173,7 @@ const Programs = () => {
 
                   {/* Feature Bullets */}
                   <ul className="space-y-3 mb-8">
-                    {prog.features.map((feat, fIdx) => (
+                    {prog.features?.map((feat, fIdx) => (
                       <li key={fIdx} className="flex items-center gap-2 text-xs font-semibold text-gray-300">
                         <span className={`w-1.5 h-1.5 rounded-full ${prog.textAccent} bg-current`} />
                         {feat}

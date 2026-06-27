@@ -13,12 +13,14 @@ import Gallery from './components/Gallery'
 import CTA from './components/CTA'
 import Footer from './components/Footer'
 import Preloader from './components/Preloader'
+import CustomCursor from './components/CustomCursor'
 
 const App = () => {
   const [loading, setLoading] = React.useState(true)
 
   return (
     <>
+      <CustomCursor />
       <Preloader onComplete={() => setLoading(false)} />
       <div className={`bg-dark-bg min-h-screen text-gray-100 selection:bg-neon-lime selection:text-black transition-opacity duration-1000 ${
         loading ? 'opacity-0' : 'opacity-100'

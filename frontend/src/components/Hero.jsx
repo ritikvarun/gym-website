@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FiUsers, FiAward, FiTrendingUp, FiArrowDown } from 'react-icons/fi'
 import StatsCard from './StatsCard'
 import gymFallback from '../assets/gym_hero_fallback.webp'
 import Magnetic from './Magnetic'
+import { API_URL } from '../config'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -19,7 +20,37 @@ const Hero = () => {
   const statsContainerRef = useRef(null)
   const indicatorRef = useRef(null)
 
+  const [settings, setSettings] = useState({
+    gymName: "Muscle Craft Fitness Club",
+    logoText: "Muscle Craft",
+    heroTitle1: "Transform Your Body.",
+    heroTitle2: "Transform Your Life.",
+    heroSubheadline: "Expert trainers, cutting-edge equipment, personalized workout plans, and a motivating community designed to help you achieve your fitness goals faster.",
+    membersActive: "15k+",
+    eliteCoaches: "25+",
+    successRate: "99.8%"
+  })
+  const [dataLoaded, setDataLoaded] = useState(false)
+
+  // Fetch settings from local API
   useEffect(() => {
+    fetch(`${API_URL}/api/settings`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.heroTitle1) {
+          setSettings(data)
+        }
+        setDataLoaded(true)
+      })
+      .catch(err => {
+        console.log("Using default fallback settings:", err.message)
+        setDataLoaded(true)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!dataLoaded) return
+
     const titleWords = headlineRef.current.querySelectorAll('.title-word')
     const subheadline = subheadlineRef.current
     const buttons = btnContainerRef.current.children
@@ -152,7 +183,11 @@ const Hero = () => {
     return () => {
       heroEl.removeEventListener('mousemove', handleMouseMove)
     }
-  }, [])
+  }, [dataLoaded])
+
+  // Split titles into words
+  const title1Words = settings.heroTitle1.split(" ")
+  const title2Words = settings.heroTitle2.split(" ")
 
   return (
     <section 
@@ -192,7 +227,7 @@ const Hero = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card border-white/5 text-neon-lime text-xs font-bold uppercase tracking-widest mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-neon-lime animate-pulse"></span>
-            AURA Premium Athletic Experience
+            {settings.gymName} Premium Athletic Experience
           </div>
 
           {/* Headline */}
@@ -201,26 +236,28 @@ const Hero = () => {
             className="font-display text-3xl sm:text-5xl md:text-7xl lg:text-[88px] font-black tracking-tight text-white uppercase leading-[1.0] sm:leading-[0.95] mb-6 select-none flex flex-col items-center gap-1 sm:gap-0"
           >
             <span className="block py-1">
-              <span className="inline-block overflow-hidden py-0.5 sm:py-1">
-                <span className="inline-block translate-y-full title-word">Transform</span>
-              </span>{" "}
-              <span className="inline-block overflow-hidden py-0.5 sm:py-1">
-                <span className="inline-block translate-y-full title-word">Your</span>
-              </span>{" "}
-              <span className="inline-block overflow-hidden py-0.5 sm:py-1">
-                <span className="inline-block translate-y-full text-neon-lime text-glow-lime title-word">Body.</span>
-              </span>
+              {title1Words.map((word, wIdx) => {
+                const isLast = wIdx === title1Words.length - 1
+                return (
+                  <span key={wIdx} className="inline-block overflow-hidden py-0.5 sm:py-1 mr-2 sm:mr-3">
+                    <span className={`inline-block translate-y-full title-word ${isLast ? 'text-neon-lime text-glow-lime font-bold' : ''}`}>
+                      {word}
+                    </span>
+                  </span>
+                )
+              })}
             </span>
             <span className="block py-1">
-              <span className="inline-block overflow-hidden py-0.5 sm:py-1">
-                <span className="inline-block translate-y-full title-word">Transform</span>
-              </span>{" "}
-              <span className="inline-block overflow-hidden py-0.5 sm:py-1">
-                <span className="inline-block translate-y-full title-word">Your</span>
-              </span>{" "}
-              <span className="inline-block overflow-hidden py-0.5 sm:py-1">
-                <span className="inline-block translate-y-full bg-clip-text text-transparent bg-gradient-to-r from-neon-lime to-neon-cyan title-word">Life.</span>
-              </span>
+              {title2Words.map((word, wIdx) => {
+                const isLast = wIdx === title2Words.length - 1
+                return (
+                  <span key={wIdx} className="inline-block overflow-hidden py-0.5 sm:py-1 mr-2 sm:mr-3">
+                    <span className={`inline-block translate-y-full title-word ${isLast ? 'bg-clip-text text-transparent bg-gradient-to-r from-neon-lime to-neon-cyan font-bold' : ''}`}>
+                      {word}
+                    </span>
+                  </span>
+                )
+              })}
             </span>
           </h1>
 
@@ -229,7 +266,7 @@ const Hero = () => {
             ref={subheadlineRef} 
             className="text-base md:text-lg lg:text-xl text-gray-300 font-medium leading-relaxed max-w-2xl mb-10 text-pretty"
           >
-            Expert trainers, cutting-edge equipment, personalized workout plans, and a motivating community designed to help you achieve your fitness goals faster.
+            {settings.heroSubheadline}
           </p>
 
           {/* CTA Buttons */}
@@ -247,13 +284,18 @@ const Hero = () => {
             </Magnetic>
             <Magnetic>
               <a
-                href="#programs"
-                className="w-full sm:w-auto px-8 py-4 rounded-full glass-card hover:bg-white/5 text-white font-bold uppercase tracking-wider text-sm border-white/10 hover:border-neon-cyan/40 transition-all duration-300 hover:-translate-y-1"
+                href="#trial"
+                className="w-full sm:w-auto px-8 py-4 rounded-full glass-card hover:bg-white/5 text-white font-bold uppercase tracking-wider text-sm border-white/10 hover:border-neon-cyan/40 transition-all duration-300 hover:-translate-y-1 flex flex-col items-center gap-0.5"
               >
-                Book Free Trial
+                <span>1-Day Trial Pass</span>
+                <span className="text-neon-lime text-xs font-black tracking-widest">₹200 — Adjustable</span>
               </a>
             </Magnetic>
           </div>
+          {/* Trial note */}
+          <p className="text-xs text-gray-500 -mt-12 mb-4 text-center">
+            ₹200 trial fee gets <span className="text-neon-lime font-semibold">fully adjusted</span> toward your membership if you join.
+          </p>
         </div>
 
         {/* Floating Metrics / Stats Cards */}
@@ -264,7 +306,7 @@ const Hero = () => {
           <div className="float-card-1 transition-transform duration-100 ease-out">
             <StatsCard 
               icon={FiUsers} 
-              number="15k+" 
+              number={settings.membersActive} 
               label="Members Transformed" 
               highlightClass="text-neon-lime" 
             />
@@ -272,7 +314,7 @@ const Hero = () => {
           <div className="float-card-2 transition-transform duration-100 ease-out">
             <StatsCard 
               icon={FiAward} 
-              number="25+" 
+              number={settings.eliteCoaches} 
               label="Elite Coaches" 
               highlightClass="text-neon-cyan" 
             />
@@ -280,7 +322,7 @@ const Hero = () => {
           <div className="float-card-3 transition-transform duration-100 ease-out">
             <StatsCard 
               icon={FiTrendingUp} 
-              number="99.8%" 
+              number={settings.successRate} 
               label="Success Rate" 
               highlightClass="text-neon-pink" 
             />

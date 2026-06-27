@@ -85,9 +85,16 @@ html {
   scroll-behavior: smooth;
   background-color: #08080a;
   overflow-x: hidden;
+  cursor: none;
 }
 
 body {
   font-family: var(--font-sans);
   overflow-x: hidden;
+  cursor: none;
+}
+
+/* Hide default cursor on all interactive elements too */
+a, button, [role="button"], input, textarea, select, label, .cursor-pointer {
+  cursor: none !important;
 }

@@ -1,0 +1,74 @@
+{
+  "trainers": [
+    {
+      "_id": "1782410140962",
+      "name": "god",
+      "role": "god",
+      "exp": "2",
+      "certs": [],
+      "image": "http://localhost:5000/uploads/1782410140955-515890775.jpg",
+      "accentColor": "text-neon-pink border-neon-pink/20",
+      "badgeBg": "bg-neon-pink/10",
+      "glow": "shadow-neon-pink/5 hover:shadow-neon-pink/20",
+      "borderColor": "group-hover:border-neon-pink/30",
+      "socials": {
+        "instagram": "#",
+        "twitter": "#"
+      }
+    }
+  ],
+  "gallery": [
+    {
+      "_id": "1782410232449",
+      "title": "hero",
+      "tag": "new ",
+      "aspect": "aspect-square",
+      "glowColor": "group-hover:border-neon-lime/30",
+      "img": "http://localhost:5000/uploads/1782410232442-537491360.jpg"
+    },
+    {
+      "title": "new add",
+      "tag": "mind",
+      "aspect": "aspect-square",
+      "glowColor": "group-hover:border-neon-lime/30",
+      "img": "http://localhost:5000/uploads/1782438561559-390570276.jpg",
+      "_id": "1782438561563"
+    },
+    {
+      "title": "hjgjfh",
+      "tag": "hfh",
+      "aspect": "aspect-square",
+      "glowColor": "group-hover:border-neon-lime/30",
+      "img": "http://localhost:5000/uploads/1782441168703-400655881.png",
+      "_id": "1782441168707"
+    }
+  ],
+  "classes": [],
+  "transformations": [
+    {
+      "name": "ritik",
+      "program": "gym",
+      "duration": "16 weak",
+      "tagline": "lean muscle",
+      "quote": "no pain no gain",
+      "accentColor": "#ccff00",
+      "beforeImage": "http://localhost:5000/uploads/1782411523892-997826208.JPG",
+      "afterImage": "http://localhost:5000/uploads/1782411523898-775733908.jpg",
+      "stats": [],
+      "_id": "1782411523901"
+    }
+  ],
+  "settings": {
+    "gymName": "Muscle Craft Fitness Club",
+    "logoText": "Muscle Craft Fitness Club",
+    "heroTitle1": "Transform Your Body.",
+    "heroTitle2": "Transform Your Life.",
+    "heroSubheadline": "Expert trainers, cutting-edge equipment, personalized workout plans, and a motivating community designed to help you achieve your fitness goals faster.",
+    "membersActive": "15k+",
+    "eliteCoaches": "25+",
+    "successRate": "99.8%",
+    "contactEmail": "info@musclecraftgym.com",
+    "contactPhone": "+1 (555) 000-0000",
+    "contactAddress": "123 Gym Street, Fitness City"
+  }
+}

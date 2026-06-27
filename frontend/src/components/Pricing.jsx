@@ -52,14 +52,16 @@ const Pricing = () => {
   const plans = [
     {
       name: 'Basic Access',
-      price: '89',
-      period: '/ month',
+      price: '200',
+      period: '1-Day Trial Pass',
+      trial: '₹200',
+      trialNote: 'Adjusted in membership if you join',
       desc: 'Essential conditioning tools for the self-guided athlete.',
       features: [
         { title: 'Gym Access', desc: 'Standard hours (5:00 AM - 10:00 PM)' },
         { title: 'Trainer Support', desc: '1x Group Orientation session' },
         { title: 'Diet Guidance', desc: 'Standard macro template e-book' },
-        { title: 'Fitness Tracking', desc: 'Aura logbook mobile app manual entry' }
+        { title: 'Fitness Tracking', desc: 'Muscle Craft logbook mobile app manual entry' }
       ],
       recommended: false,
       btnText: 'Select Basic',
@@ -69,8 +71,10 @@ const Pricing = () => {
     },
     {
       name: 'Standard Tier',
-      price: '159',
-      period: '/ month',
+      price: '8,000',
+      period: 'for 6 months',
+      trial: null,
+      trialNote: null,
       desc: 'Our signature program designed for active transformation.',
       features: [
         { title: 'Gym Access', desc: '24/7 Unlimited Club Access' },
@@ -86,8 +90,10 @@ const Pricing = () => {
     },
     {
       name: 'Elite Premium',
-      price: '279',
-      period: '/ month',
+      price: '12,000',
+      period: 'for 1 year',
+      trial: null,
+      trialNote: null,
       desc: 'Bespoke fitness engineering and biometric monitoring.',
       features: [
         { title: 'Gym Access', desc: '24/7 Access + Private Locker & Lounge' },
@@ -119,7 +125,7 @@ const Pricing = () => {
         <div className="pricing-reveal text-center max-w-2xl mx-auto mb-20">
           <div className="text-neon-lime text-xs font-bold uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-neon-lime inline-block animate-pulse"></span>
-            Aura Memberships
+            Muscle Craft Memberships
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-none mb-6">
             INVEST IN YOUR <br className="sm:hidden" />
@@ -160,15 +166,27 @@ const Pricing = () => {
               </div>
 
               {/* Price Tag */}
-              <div className="flex items-baseline mb-3">
-                <span className="text-lg font-bold text-white tracking-wide mr-1">$</span>
-                <span className="font-display text-5xl md:text-6xl font-black text-white tracking-tight leading-none">
-                  {plan.price}
-                </span>
-                <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider ml-2">
+              <div className="flex flex-col mb-2">
+                <div className="flex items-baseline">
+                  <span className="text-xl font-bold text-white mr-1">₹</span>
+                  <span className="font-display text-5xl md:text-6xl font-black text-white tracking-tight leading-none">
+                    {plan.price}
+                  </span>
+                </div>
+                <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider mt-1">
                   {plan.period}
                 </span>
               </div>
+
+              {/* Trial Note — only for Basic */}
+              {plan.trial && (
+                <div className="flex flex-col gap-1 mb-3">
+                  <span className="inline-flex items-center w-fit whitespace-nowrap text-[10px] font-black text-black bg-neon-lime px-3 py-1 rounded-full uppercase tracking-widest">
+                    {plan.trial} — 1-Day Trial Pass
+                  </span>
+                  <span className="text-[10px] text-gray-500 italic">{plan.trialNote}</span>
+                </div>
+              )}
 
               {/* Description */}
               <p className="text-xs text-gray-500 leading-relaxed font-sans mb-8 border-b border-white/5 pb-6">
