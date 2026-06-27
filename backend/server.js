@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
 import dns from 'dns';
+import jwt from 'jsonwebtoken';
 
 // Fix: Windows pe Node.js IPv6 DNS issue — MongoDB SRV resolve ke liye
 dns.setDefaultResultOrder('ipv4first');
@@ -235,43 +236,64 @@ const uploadImage = async (file) => {
 // ==========================================
 // AUTHENTICATION MIDDLEWARE & ENDPOINTS
 // ==========================================
+// ==========================================
+// JWT AUTH MIDDLEWARE
+// ==========================================
+const JWT_SECRET = process.env.JWT_SECRET;
+
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = req.cookies.adminToken || (authHeader && authHeader.split(' ')[1]);
 
-  if (token === 'aura_admin_session_token_xyz123') {
+  if (!token) {
+    return res.status(401).json({ success: false, message: "Access denied. No token provided." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.admin = decoded;
     next();
-  } else {
-    res.status(401).json({ success: false, message: "Not authenticated" });
+  } catch (err) {
+    return res.status(401).json({ success: false, message: "Invalid or expired token. Please login again." });
   }
 };
 
+// Admin Login
 app.post('/api/auth/adminlogin', (req, res) => {
   const { email, password } = req.body;
-  if (
-    (email === 'admin@musclecraft.com' && password === 'admin123') ||
-    (email === 'admin@aura.com' && password === 'admin123') ||
-    (email === 'admin@shopx.com' && password === 'admin')
-  ) {
-    // Return token in body for LocalStorage authentication
-    const token = 'aura_admin_session_token_xyz123';
+
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@musclecraft.com';
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'musclecraft@admin2024';
+
+  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    const token = jwt.sign(
+      { email: ADMIN_EMAIL, role: 'admin' },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
     res.cookie('adminToken', token, {
       httpOnly: true,
-      secure: false, 
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000 // 1 day
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
     return res.json({ success: true, token, message: "Logged in successfully" });
   }
   return res.status(401).json({ success: false, message: "Invalid email or password" });
 });
 
+// Get Admin Info
 app.get('/api/user/getadmin', authMiddleware, (req, res) => {
-  return res.json({ success: true, email: "admin@musclecraft.com", role: "admin" });
+  return res.json({ success: true, email: req.admin.email, role: 'admin' });
 });
 
+// Logout
 app.get('/api/auth/logout', (req, res) => {
-  res.clearCookie('adminToken');
+  res.clearCookie('adminToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  });
   return res.json({ success: true, message: "Logged out successfully" });
 });
 
