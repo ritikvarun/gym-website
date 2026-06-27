@@ -790,7 +790,32 @@ app.delete('/api/transformations/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// ==========================================
+// ROOT HEALTH CHECK
+// ==========================================
+app.get('/', (req, res) => {
+  res.json({
+    status: '✅ Online',
+    name: 'Muscle Craft Gym — Backend API',
+    version: '1.0.0',
+    database: isMongoConnected ? '✅ MongoDB Atlas Connected' : '⚠️ Local JSON Fallback',
+    endpoints: {
+      settings:        'GET  /api/settings',
+      trainers:        'GET  /api/trainers',
+      gallery:         'GET  /api/gallery',
+      programs:        'GET  /api/programs',
+      testimonials:    'GET  /api/testimonials',
+      transformations: 'GET  /api/transformations',
+      pricing:         'GET  /api/pricing',
+      login:           'POST /api/auth/adminlogin',
+      logout:          'GET  /api/auth/logout',
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 const server = app.listen(PORT, () => {
+
   console.log(`Backend server is running on http://localhost:${PORT}`);
 });
 
