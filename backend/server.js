@@ -809,10 +809,22 @@ app.get('/', (req, res) => {
       pricing:         'GET  /api/pricing',
       login:           'POST /api/auth/adminlogin',
       logout:          'GET  /api/auth/logout',
+      health:          'GET  /api/health'
     },
     timestamp: new Date().toISOString()
   });
 });
+
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    status: "healthy",
+    message: "Gym Backend API is Running 🚀",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
 
 const server = app.listen(PORT, () => {
 
