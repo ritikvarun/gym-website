@@ -186,8 +186,8 @@ const allowedOrigins = [
   'http://localhost:5173', // Frontend local
   'http://localhost:5174', // Admin Panel local
   // Production Vercel URLs — deploy ke baad yahan apne actual URLs add karo
-  'https://musclecraft-gym.vercel.app',
-  'https://musclecraft-admin.vercel.app',
+  'https://gym-website-pearl-three.vercel.app/',
+  'https://gym-website-n5zn.vercel.app/',
 ];
 
 app.use(cors({
