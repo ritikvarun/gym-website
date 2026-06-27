@@ -67,7 +67,8 @@ const Pricing = () => {
       btnText: 'Select Basic',
       glow: 'hover:border-white/20',
       accentColor: 'text-gray-400',
-      btnStyles: 'border border-white/10 hover:border-white/30 text-white hover:bg-white/5'
+      btnStyles: 'border border-white/10 hover:border-white/30 text-white hover:bg-white/5',
+      joinHash: '#join-basic'
     },
     {
       name: 'Standard Tier',
@@ -86,7 +87,8 @@ const Pricing = () => {
       btnText: 'Join Standard Now',
       glow: 'shadow-neon-lime/10 border-neon-lime/25 hover:border-neon-lime/50 shadow-lg',
       accentColor: 'text-neon-lime',
-      btnStyles: 'bg-neon-lime hover:bg-[#b0dc00] text-black shadow-lg shadow-neon-lime/10 hover:shadow-neon-lime/35'
+      btnStyles: 'bg-neon-lime hover:bg-[#b0dc00] text-black shadow-lg shadow-neon-lime/10 hover:shadow-neon-lime/35',
+      joinHash: '#join-standard'
     },
     {
       name: 'Elite Premium',
@@ -105,7 +107,8 @@ const Pricing = () => {
       btnText: 'Join Elite Premium',
       glow: 'hover:border-neon-cyan/40',
       accentColor: 'text-neon-cyan',
-      btnStyles: 'border border-neon-cyan/20 hover:border-neon-cyan/55 text-white hover:bg-neon-cyan/5'
+      btnStyles: 'border border-neon-cyan/20 hover:border-neon-cyan/55 text-white hover:bg-neon-cyan/5',
+      joinHash: '#join-elite'
     }
   ]
 
@@ -210,7 +213,7 @@ const Pricing = () => {
 
               {/* Call To Action Button */}
               <a
-                href="#join"
+                href={plan.joinHash}
                 className={`w-full py-4 rounded-2xl text-center text-xs font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group-hover:gap-3 ${plan.btnStyles}`}
               >
                 {plan.btnText}

@@ -10,6 +10,7 @@ import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
 import dns from 'dns';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
 // Fix: Windows pe Node.js IPv6 DNS issue — MongoDB SRV resolve ke liye
 dns.setDefaultResultOrder('ipv4first');
@@ -72,6 +73,7 @@ const defaultDb = {
   gallery: [],
   classes: [],
   transformations: [],
+  leads: [],
   settings: {
     gymName: "Muscle Craft Fitness Club",
     logoText: "Muscle Craft",
@@ -180,6 +182,17 @@ const transformationSchema = new mongoose.Schema({
   ]
 });
 const TransformationModel = mongoose.model('Transformation', transformationSchema);
+
+const leadSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  phone: { type: String, required: true },
+  address: { type: String, required: true },
+  plan: { type: String, required: true },
+  message: { type: String },
+  status: { type: String, default: 'New' },
+  createdAt: { type: Date, default: Date.now }
+});
+const LeadModel = mongoose.model('Lead', leadSchema);
 
 // CORS configuration - allow admin and frontend origins
 const allowedOrigins = [
@@ -789,6 +802,198 @@ app.delete('/api/transformations/:id', authMiddleware, async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
+
+// ==========================================
+// EMAIL NOTIFICATION HELPER
+// ==========================================
+const sendEmailNotification = async (lead) => {
+  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const emailReceiver = process.env.EMAIL_RECEIVER;
+
+  if (!smtpUser || !smtpPass) {
+    console.log("⚠️ SMTP_USER or SMTP_PASS not set in environment. Skipping email notification.");
+    return false;
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      auth: {
+        user: smtpUser,
+        pass: smtpPass
+      }
+    });
+
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #1f1f23; background-color: #08080a; color: #fff; border-radius: 16px;">
+        <div style="text-align: center; border-bottom: 2px solid #ccff00; padding-bottom: 15px; margin-bottom: 20px;">
+          <h2 style="color: #ccff00; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">New Gym Lead Capture</h2>
+          <p style="color: #888; margin: 5px 0 0 0; font-size: 11px; font-weight: bold; text-transform: uppercase;">Muscle Craft Fitness Club</p>
+        </div>
+        <div style="margin-bottom: 25px; padding: 0 10px;">
+          <p style="font-size: 15px; line-height: 1.6; color: #ccc;">A new visitor has submitted a lead/trial pass form on the website. Here are the client's details:</p>
+          
+          <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: #0e0e12; border-radius: 12px; overflow: hidden;">
+            <tr style="border-bottom: 1px solid #1a1a22;">
+              <td style="padding: 14px 16px; color: #888; font-weight: bold; font-size: 12px; text-transform: uppercase; width: 120px;">Full Name:</td>
+              <td style="padding: 14px 16px; color: #fff; font-size: 14px; font-weight: bold;">${lead.name}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1a1a22;">
+              <td style="padding: 14px 16px; color: #888; font-weight: bold; font-size: 12px; text-transform: uppercase;">Phone:</td>
+              <td style="padding: 14px 16px; color: #ccff00; font-size: 14px; font-weight: bold;">
+                <a href="tel:${lead.phone}" style="color: #ccff00; text-decoration: none;">${lead.phone}</a>
+              </td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1a1a22;">
+              <td style="padding: 14px 16px; color: #888; font-weight: bold; font-size: 12px; text-transform: uppercase;">Address:</td>
+              <td style="padding: 14px 16px; color: #eee; font-size: 14px;">${lead.address}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1a1a22;">
+              <td style="padding: 14px 16px; color: #888; font-weight: bold; font-size: 12px; text-transform: uppercase;">Chosen Plan:</td>
+              <td style="padding: 14px 16px; color: #ccff00; font-size: 14px; font-weight: bold; text-transform: uppercase;">${lead.plan}</td>
+            </tr>
+            ${lead.message ? `
+            <tr>
+              <td style="padding: 14px 16px; color: #888; font-weight: bold; font-size: 12px; text-transform: uppercase; vertical-align: top;">Message:</td>
+              <td style="padding: 14px 16px; color: #ccc; font-size: 13px; line-height: 1.5; font-style: italic;">"${lead.message}"</td>
+            </tr>
+            ` : ''}
+          </table>
+        </div>
+        
+        <div style="text-align: center; border-top: 1px solid #1a1a22; padding-top: 20px; margin-top: 20px;">
+          <a href="https://wa.me/${lead.phone.replace(/\D/g, '')}" style="background-color: #25D366; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 9999px; font-weight: bold; display: inline-block; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);">
+            Reply on WhatsApp
+          </a>
+          <p style="font-size: 10px; color: #444; margin-top: 20px; line-height: 1.4;">
+            This email was sent automatically from the Muscle Craft Gym server.<br/>
+            Database Backup ID: ${lead._id}
+          </p>
+        </div>
+      </div>
+    `;
+
+    const mailOptions = {
+      from: `"Muscle Craft Web Leads" <${smtpUser}>`,
+      to: emailReceiver || smtpUser,
+      subject: `🔥 New Web Lead: ${lead.name} [${lead.plan}]`,
+      text: `New Lead Notification\n\nName: ${lead.name}\nPhone: ${lead.phone}\nAddress: ${lead.address}\nPlan: ${lead.plan}\nMessage: ${lead.message || 'None'}`,
+      html: htmlContent
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✉️ Nodemailer successfully sent email alert for lead ${lead.name}`);
+    return true;
+  } catch (error) {
+    console.error("❌ Error occurred in Nodemailer transporter.sendMail:", error.message);
+    return false;
+  }
+};
+
+// ==========================================
+// LEADS API
+// ==========================================
+app.post('/api/leads', async (req, res) => {
+  const { name, phone, address, plan, message } = req.body;
+
+  if (!name || !phone || !address || !plan) {
+    return res.status(400).json({ success: false, message: "Required fields missing (name, phone, address, plan)" });
+  }
+
+  try {
+    let savedLead;
+
+    if (isMongoConnected) {
+      savedLead = await LeadModel.create({
+        name,
+        phone,
+        address,
+        plan,
+        message,
+        status: 'New'
+      });
+    } else {
+      const db = readLocalDb();
+      if (!db.leads) db.leads = [];
+      
+      savedLead = {
+        _id: Date.now().toString(),
+        name,
+        phone,
+        address,
+        plan,
+        message,
+        status: 'New',
+        createdAt: new Date().toISOString()
+      };
+      
+      db.leads.push(savedLead);
+      writeLocalDb(db);
+    }
+
+    // Attempt to send email async so we don't delay client response.
+    // If it fails, lead is already safely saved in DB.
+    sendEmailNotification(savedLead).catch(err => {
+      console.error("Async email sending failed:", err.message);
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Lead submitted successfully",
+      lead: savedLead,
+      whatsappNumber: process.env.WHATSAPP_NUMBER || '919876543210'
+    });
+
+  } catch (err) {
+    console.error("Error saving gym lead:", err);
+    res.status(500).json({ success: false, message: "Internal server error occurred while saving lead" });
+  }
+});
+
+app.get('/api/leads', authMiddleware, async (req, res) => {
+  try {
+    if (isMongoConnected) {
+      const leads = await LeadModel.find().sort({ createdAt: -1 });
+      return res.json({ success: true, leads });
+    } else {
+      const db = readLocalDb();
+      const leads = db.leads || [];
+      // Sort descending by createdAt or _id
+      leads.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      return res.json({ success: true, leads });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.delete('/api/leads/:id', authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (isMongoConnected) {
+      const result = await LeadModel.findByIdAndDelete(id);
+      if (!result) return res.status(404).json({ success: false, message: "Lead not found" });
+      res.json({ success: true, message: "Lead deleted successfully" });
+    } else {
+      const db = readLocalDb();
+      const initialLength = db.leads ? db.leads.length : 0;
+      db.leads = (db.leads || []).filter(lead => lead._id !== id);
+      if ((db.leads ? db.leads.length : 0) === initialLength) {
+        return res.status(404).json({ success: false, message: "Lead not found" });
+      }
+      writeLocalDb(db);
+      res.json({ success: true, message: "Lead deleted successfully" });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 
 // ==========================================
 // ROOT HEALTH CHECK
