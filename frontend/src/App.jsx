@@ -31,32 +31,32 @@ const App = () => {
       {/* Hero Section */}
       <Hero />
       
-      {/* Programs / Showcase Section */}
-      <Programs />
+      {/* Gallery Section */}
+      <Gallery />
       
       {/* About Us Section */}
       <About />
       
-      {/* Services Section */}
-      <Services />
-      
       {/* Why Choose Us Section */}
       <WhyChooseUs />
       
-      {/* Transformations Section */}
-      <Transformations />
+      {/* Services Section */}
+      <Services />
       
       {/* Trainers Section */}
       <Trainers />
       
+      {/* Programs / Showcase Section */}
+      <Programs />
+      
       {/* Pricing Section */}
       <Pricing />
       
+      {/* Transformations Section */}
+      <Transformations />
+      
       {/* Testimonials Section */}
       <Testimonials />
-      
-      {/* Gallery Section */}
-      <Gallery />
       
       {/* Call to Action Section */}
       <CTA />

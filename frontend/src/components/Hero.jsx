@@ -284,7 +284,7 @@ const Hero = () => {
             </Magnetic>
             <Magnetic>
               <a
-                href="#trial"
+                href="#join-basic"
                 className="w-full sm:w-auto px-8 py-4 rounded-full glass-card hover:bg-white/5 text-white font-bold uppercase tracking-wider text-sm border-white/10 hover:border-neon-cyan/40 transition-all duration-300 hover:-translate-y-1 flex flex-col items-center gap-0.5"
               >
                 <span>1-Day Trial Pass</span>

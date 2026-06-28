@@ -52,7 +52,7 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          {['Home', 'Programs', 'Services', 'Trainers', 'Pricing', 'Gallery', 'About'].map((link) => (
+          {['Home', 'Gallery', 'About', 'Services', 'Trainers', 'Programs', 'Pricing'].map((link) => (
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
@@ -95,7 +95,7 @@ const Navbar = () => {
         }`}
       >
         <div className="flex flex-col gap-6">
-          {['Home', 'Programs', 'Services', 'Trainers', 'Pricing', 'Gallery', 'About'].map((link, idx) => (
+          {['Home', 'Gallery', 'About', 'Services', 'Trainers', 'Programs', 'Pricing'].map((link, idx) => (
             <a
               key={link}
               href={`#${link.toLowerCase()}`}

@@ -5,6 +5,9 @@ import { FiChevronLeft, FiChevronRight, FiCheckCircle } from 'react-icons/fi'
 import afterMarcus from '../assets/after_marcus.webp'
 import afterElena from '../assets/after_elena.webp'
 import afterJulian from '../assets/after_julian.webp'
+import beforeMarcus from '../assets/before_marcus.png'
+import beforeElena from '../assets/before_elena.png'
+import beforeJulian from '../assets/before_julian.png'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -40,8 +43,8 @@ const BeforeAfterSlider = ({ beforeImg, afterImg, accentColor }) => {
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
     >
-      {/* Before Image: Grayscale and darker */}
-      <div className="absolute inset-0 grayscale contrast-125 brightness-50">
+      {/* Before Image: Full color */}
+      <div className="absolute inset-0">
         <img 
           src={beforeImg} 
           alt="Before Transformation" 
@@ -107,6 +110,7 @@ const fallbackStories = [
     tagline: 'Rebuilt with Lean Muscle mass',
     quote: "The scientific training paradigms at Muscle Craft completely transformed my athletic build. My coach calibrated every single block to bypass genetic plateaus safely.",
     accentColor: '#ccff00', // Neon Lime
+    beforeImage: beforeMarcus,
     image: afterMarcus,
     stats: [
       { label: 'Lean Mass Gained', value: '+6.2 kg' },
@@ -121,6 +125,7 @@ const fallbackStories = [
     tagline: 'Metabolic Redesign and VO2 Max',
     quote: "I signed up at Muscle Craft to sharpen my cardiovascular output, but I walked away with a brand-new engine. The conditioning framework reshaped my lifestyle.",
     accentColor: '#00f0ff', // Neon Cyan
+    beforeImage: beforeElena,
     image: afterElena,
     stats: [
       { label: 'Weight Optimisation', value: '-14.8 kg' },
@@ -135,6 +140,7 @@ const fallbackStories = [
     tagline: 'Joint Performance & Rehab',
     quote: "After a severe knee injury, I assumed my competitive days were over. Muscle Craft's biomechanics-focused recovery programming got me moving stronger than ever.",
     accentColor: '#ff007f', // Neon Pink
+    beforeImage: beforeJulian,
     image: afterJulian,
     stats: [
       { label: 'Deadlift Capacity', value: '+75 kg' },
