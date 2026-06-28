@@ -83,6 +83,9 @@ const defaultDb = {
     membersActive: "15k+",
     eliteCoaches: "25+",
     successRate: "99.8%",
+    aboutYears: "12",
+    aboutMembers: "8500",
+    aboutCoaches: "24",
     contactEmail: "info@musclecraftgym.com",
     contactPhone: "+1 (555) 000-0000",
     contactAddress: "123 Gym Street, Fitness City"
@@ -121,6 +124,9 @@ const settingsSchema = new mongoose.Schema({
   membersActive: { type: String, default: "15k+" },
   eliteCoaches: { type: String, default: "25+" },
   successRate: { type: String, default: "99.8%" },
+  aboutYears: { type: String, default: "12" },
+  aboutMembers: { type: String, default: "8500" },
+  aboutCoaches: { type: String, default: "24" },
   contactEmail: { type: String, default: "info@musclecraftgym.com" },
   contactPhone: { type: String, default: "+1 (555) 000-0000" },
   contactAddress: { type: String, default: "123 Gym Street, Fitness City" }

@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FiAward, FiCpu, FiTarget, FiUsers } from 'react-icons/fi'
 import aboutGym from '../assets/about_gym.webp'
+import { API_URL } from '../config'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -12,7 +13,36 @@ const About = () => {
   const imageRef = useRef(null)
   const containerRef = useRef(null)
 
+  const [settings, setSettings] = useState({
+    aboutYears: "12",
+    aboutMembers: "8500",
+    aboutCoaches: "24"
+  })
+  const [settingsLoaded, setSettingsLoaded] = useState(false)
+
+  // Fetch settings from local API
   useEffect(() => {
+    fetch(`${API_URL}/api/settings`)
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          setSettings({
+            aboutYears: data.aboutYears || "12",
+            aboutMembers: data.aboutMembers || "8500",
+            aboutCoaches: data.aboutCoaches || "24"
+          })
+        }
+        setSettingsLoaded(true)
+      })
+      .catch(err => {
+        console.log("Using default fallback about stats:", err.message)
+        setSettingsLoaded(true)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!settingsLoaded) return
+
     // 1. Image Zoom-in / Parallax on Scroll
     gsap.fromTo(imageRef.current,
       { scale: 1.25 },
@@ -66,7 +96,7 @@ const About = () => {
         }
       })
     })
-  }, [])
+  }, [settingsLoaded])
 
   const pillars = [
     {
@@ -78,24 +108,24 @@ const About = () => {
     },
     {
       icon: FiCpu,
-      title: 'State-of-the-Art Gear',
-      desc: 'Precision-engineered strength and recovery systems designed for biomechanical excellence.',
+      title: 'High-Tech Environment',
+      desc: 'Smart biometric feedback systems and performance optimization gear at every station.',
       accent: 'border-neon-cyan/20 hover:border-neon-cyan/50',
       iconColor: 'text-neon-cyan'
     },
     {
       icon: FiTarget,
-      title: 'Customized Fitness Plans',
-      desc: 'Bio-individual program architectures tailored precisely to your metrics and lifestyle.',
+      title: 'Bespoke Blueprinting',
+      desc: 'Nutrition, strength, and recovery schedules mapped precisely around your biomarkers.',
       accent: 'border-neon-pink/20 hover:border-neon-pink/50',
       iconColor: 'text-neon-pink'
     },
     {
       icon: FiUsers,
-      title: 'Supportive Community',
-      desc: 'A curated network of motivated, high-achieving individuals striving for greatness.',
-      accent: 'border-white/10 hover:border-white/30',
-      iconColor: 'text-white'
+      title: 'The Elite Syndicate',
+      desc: 'Connect with a highly motivated network of elite performers driving mutual growth.',
+      accent: 'border-neon-lime/20 hover:border-neon-lime/50',
+      iconColor: 'text-neon-lime'
     }
   ]
 
@@ -193,7 +223,7 @@ const About = () => {
           {/* Stat 1 */}
           <div className="flex flex-col justify-center py-4 md:py-0 md:px-4">
             <span className="font-display text-5xl md:text-6xl font-black text-white leading-none tracking-tight flex justify-center items-baseline">
-              <span className="stat-counter text-glow-lime text-neon-lime" data-target="12">0</span>
+              <span className="stat-counter text-glow-lime text-neon-lime" data-target={settings.aboutYears}>0</span>
               <span className="text-neon-lime">+</span>
             </span>
             <span className="text-xs font-bold tracking-widest text-gray-400 uppercase mt-3">Years of Excellence</span>
@@ -202,7 +232,7 @@ const About = () => {
           {/* Stat 2 */}
           <div className="flex flex-col justify-center py-4 md:py-0 md:px-4">
             <span className="font-display text-5xl md:text-6xl font-black text-white leading-none tracking-tight flex justify-center items-baseline">
-              <span className="stat-counter text-glow-cyan text-neon-cyan" data-target="8500">0</span>
+              <span className="stat-counter text-glow-cyan text-neon-cyan" data-target={settings.aboutMembers}>0</span>
               <span className="text-neon-cyan">+</span>
             </span>
             <span className="text-xs font-bold tracking-widest text-gray-400 uppercase mt-3">Members Transformed</span>
@@ -211,7 +241,7 @@ const About = () => {
           {/* Stat 3 */}
           <div className="flex flex-col justify-center py-4 md:py-0 md:px-4">
             <span className="font-display text-5xl md:text-6xl font-black text-white leading-none tracking-tight flex justify-center items-baseline">
-              <span className="stat-counter text-white" data-target="24">0</span>
+              <span className="stat-counter text-white" data-target={settings.aboutCoaches}>0</span>
               <span className="text-white">+</span>
             </span>
             <span className="text-xs font-bold tracking-widest text-gray-400 uppercase mt-3">Elite Coaches</span>

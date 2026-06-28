@@ -26,6 +26,11 @@ function Settings() {
     const [eliteCoaches, setEliteCoaches] = useState("")
     const [successRate, setSuccessRate] = useState("")
     
+    // Stats About
+    const [aboutYears, setAboutYears] = useState("")
+    const [aboutMembers, setAboutMembers] = useState("")
+    const [aboutCoaches, setAboutCoaches] = useState("")
+    
     // Contact Info
     const [contactEmail, setContactEmail] = useState("")
     const [contactPhone, setContactPhone] = useState("")
@@ -44,6 +49,9 @@ function Settings() {
             setMembersActive(data.membersActive || "")
             setEliteCoaches(data.eliteCoaches || "")
             setSuccessRate(data.successRate || "")
+            setAboutYears(data.aboutYears || "12")
+            setAboutMembers(data.aboutMembers || "8500")
+            setAboutCoaches(data.aboutCoaches || "24")
             setContactEmail(data.contactEmail || "")
             setContactPhone(data.contactPhone || "")
             setContactAddress(data.contactAddress || "")
@@ -71,6 +79,9 @@ function Settings() {
                 membersActive,
                 eliteCoaches,
                 successRate,
+                aboutYears,
+                aboutMembers,
+                aboutCoaches,
                 contactEmail,
                 contactPhone,
                 contactAddress
@@ -215,9 +226,49 @@ function Settings() {
                                 </div>
                             </div>
 
+                            {/* About Page Stats */}
+                            <div>
+                                <h3 className='text-[15px] font-bold text-gray-800 border-b border-gray-100 pb-2 mb-4'>4. About Section Counters</h3>
+                                <div className='grid grid-cols-1 md:grid-cols-3 gap-[20px]'>
+                                    <div>
+                                        <label className={labelClass}>Stat 1 (Years of Excellence)</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="e.g. 12" 
+                                            className={inputClass} 
+                                            value={aboutYears} 
+                                            onChange={(e) => setAboutYears(e.target.value)} 
+                                            required 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className={labelClass}>Stat 2 (Members Transformed)</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="e.g. 8500" 
+                                            className={inputClass} 
+                                            value={aboutMembers} 
+                                            onChange={(e) => setAboutMembers(e.target.value)} 
+                                            required 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className={labelClass}>Stat 3 (Elite Coaches)</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="e.g. 24" 
+                                            className={inputClass} 
+                                            value={aboutCoaches} 
+                                            onChange={(e) => setAboutCoaches(e.target.value)} 
+                                            required 
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* Footer & Contact */}
                             <div>
-                                <h3 className='text-[15px] font-bold text-gray-800 border-b border-gray-100 pb-2 mb-4'>4. Footer Contact Details</h3>
+                                <h3 className='text-[15px] font-bold text-gray-800 border-b border-gray-100 pb-2 mb-4'>5. Footer Contact Details</h3>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-[20px] mb-4'>
                                     <div>
                                         <label className={labelClass}>Contact Email</label>
