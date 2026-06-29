@@ -150,17 +150,16 @@ const Footer = () => {
                 <FiClock className="text-neon-cyan" />
                 Working Hours
               </div>
-              <div className="flex justify-between text-xs text-gray-500 font-sans">
-                <span>Weekdays</span>
-                <span className="text-white">5:00 AM - 11:00 PM</span>
+              <div className="flex justify-between items-start text-xs text-gray-500 font-sans">
+                <span>Monday - Saturday</span>
+                <div className="text-right flex flex-col gap-0.5">
+                  <span className="text-white">5:00 AM - 10:00 AM</span>
+                  <span className="text-white">5:00 PM - 10:00 PM</span>
+                </div>
               </div>
-              <div className="flex justify-between text-xs text-gray-500 font-sans">
-                <span>Weekends</span>
-                <span className="text-white">6:00 AM - 10:00 PM</span>
-              </div>
-              <div className="flex justify-between text-xs text-gray-500 font-sans">
-                <span>Members Access</span>
-                <span className="text-neon-lime font-semibold">24/7 Access</span>
+              <div className="flex justify-between items-center text-xs text-gray-500 font-sans">
+                <span>Sunday</span>
+                <span className="text-neon-pink font-semibold">Closed</span>
               </div>
             </div>
           </div>
