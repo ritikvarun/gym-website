@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FiCheck, FiArrowRight } from 'react-icons/fi'
+import { API_URL } from '../config'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -9,6 +10,34 @@ gsap.registerPlugin(ScrollTrigger)
 const Pricing = () => {
   const sectionRef = useRef(null)
   const cardsContainerRef = useRef(null)
+
+  const [settings, setSettings] = useState({
+    basicPrice: "200",
+    basicPeriod: "1-Day Trial Pass",
+    standardPrice: "8,000",
+    standardPeriod: "for 6 months",
+    elitePrice: "12,000",
+    elitePeriod: "for 1 year"
+  })
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/settings`)
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          setSettings(prev => ({
+            ...prev,
+            basicPrice: data.basicPrice || prev.basicPrice,
+            basicPeriod: data.basicPeriod || prev.basicPeriod,
+            standardPrice: data.standardPrice || prev.standardPrice,
+            standardPeriod: data.standardPeriod || prev.standardPeriod,
+            elitePrice: data.elitePrice || prev.elitePrice,
+            elitePeriod: data.elitePeriod || prev.elitePeriod
+          }))
+        }
+      })
+      .catch(err => console.log("Using default fallback pricing settings:", err.message))
+  }, [])
 
   useEffect(() => {
     // Reveal section headers
@@ -52,9 +81,9 @@ const Pricing = () => {
   const plans = [
     {
       name: 'Basic Access',
-      price: '200',
-      period: '1-Day Trial Pass',
-      trial: '₹200',
+      price: settings.basicPrice,
+      period: settings.basicPeriod,
+      trial: `₹${settings.basicPrice}`,
       trialNote: 'Adjusted in membership if you join',
       desc: 'Essential conditioning tools for the self-guided athlete.',
       features: [
@@ -72,8 +101,8 @@ const Pricing = () => {
     },
     {
       name: 'Standard Tier',
-      price: '8,000',
-      period: 'for 6 months',
+      price: settings.standardPrice,
+      period: settings.standardPeriod,
       trial: null,
       trialNote: null,
       desc: 'Our signature program designed for active transformation.',
@@ -92,8 +121,8 @@ const Pricing = () => {
     },
     {
       name: 'Elite Premium',
-      price: '12,000',
-      period: 'for 1 year',
+      price: settings.elitePrice,
+      period: settings.elitePeriod,
       trial: null,
       trialNote: null,
       desc: 'Bespoke fitness engineering and biometric monitoring.',

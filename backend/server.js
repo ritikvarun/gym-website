@@ -89,7 +89,19 @@ const defaultDb = {
     aboutCoaches: "24",
     contactEmail: "info@musclecraftgym.com",
     contactPhone: "+1 (555) 000-0000",
-    contactAddress: "123 Gym Street, Fitness City"
+    contactAddress: "123 Gym Street, Fitness City",
+    instagramId: "musclecraftfitness",
+    ownerPhone: "8439919640",
+    receptionPhone: "",
+    basicPrice: "200",
+    basicPeriod: "1-Day Trial Pass",
+    standardPrice: "8,000",
+    standardPeriod: "for 6 months",
+    elitePrice: "12,000",
+    elitePeriod: "for 1 year",
+    aboutPhoto: "",
+    estYear: "2014",
+    estTagline: "12 Years of Athletic Innovation"
   }
 };
 
@@ -130,7 +142,19 @@ const settingsSchema = new mongoose.Schema({
   aboutCoaches: { type: String, default: "24" },
   contactEmail: { type: String, default: "info@musclecraftgym.com" },
   contactPhone: { type: String, default: "+1 (555) 000-0000" },
-  contactAddress: { type: String, default: "123 Gym Street, Fitness City" }
+  contactAddress: { type: String, default: "123 Gym Street, Fitness City" },
+  instagramId: { type: String, default: "musclecraftfitness" },
+  ownerPhone: { type: String, default: "" },
+  receptionPhone: { type: String, default: "" },
+  basicPrice: { type: String, default: "200" },
+  basicPeriod: { type: String, default: "1-Day Trial Pass" },
+  standardPrice: { type: String, default: "8,000" },
+  standardPeriod: { type: String, default: "for 6 months" },
+  elitePrice: { type: String, default: "12,000" },
+  elitePeriod: { type: String, default: "for 1 year" },
+  aboutPhoto: { type: String, default: "" },
+  estYear: { type: String, default: "2014" },
+  estTagline: { type: String, default: "12 Years of Athletic Innovation" }
 });
 const SettingsModel = mongoose.model('Settings', settingsSchema);
 
@@ -240,7 +264,7 @@ const uploadImage = async (file) => {
         { folder: 'gym_customizer' },
         (error, result) => {
           if (error) reject(error);
-          else resolve(result.secure_url);
+          else resolve(result.secure_url ? result.secure_url.replace('/upload/', '/upload/q_auto,f_auto/') : result.secure_url);
         }
       );
       uploadStream.end(file.buffer);
@@ -356,6 +380,33 @@ app.post('/api/settings', authMiddleware, async (req, res) => {
     db.settings = { ...db.settings, ...req.body };
     writeLocalDb(db);
     res.json({ success: true, settings: db.settings });
+  }
+});
+
+// Upload About Section Photo
+app.post('/api/settings/about-photo', authMiddleware, upload.single('photo'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded' });
+  }
+  try {
+    const photoUrl = await uploadImage(req.file);
+    if (isMongoConnected) {
+      let settings = await SettingsModel.findOne();
+      if (!settings) {
+        settings = new SettingsModel({ aboutPhoto: photoUrl });
+      } else {
+        settings.aboutPhoto = photoUrl;
+      }
+      await settings.save();
+      return res.json({ success: true, aboutPhoto: photoUrl });
+    } else {
+      const db = readLocalDb();
+      db.settings = { ...db.settings, aboutPhoto: photoUrl };
+      writeLocalDb(db);
+      return res.json({ success: true, aboutPhoto: photoUrl });
+    }
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
   }
 });
 

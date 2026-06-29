@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FiInstagram, FiTwitter, FiYoutube, FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi'
+import { FiInstagram, FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi'
 import { RiFlashlightLine } from 'react-icons/ri'
 import { API_URL } from '../config'
 
@@ -10,7 +10,10 @@ const Footer = () => {
     gymName: "Muscle Craft Fitness Club",
     contactEmail: "info@musclecraft.com",
     contactPhone: "+1 (555) 900-MCFC",
-    contactAddress: "128 Peak Avenue, Suite 400, Beverly Hills, CA 90210"
+    contactAddress: "128 Peak Avenue, Suite 400, Beverly Hills, CA 90210",
+    instagramId: "musclecraftfitness",
+    ownerPhone: "8439919640",
+    receptionPhone: ""
   })
 
   useEffect(() => {
@@ -66,25 +69,13 @@ const Footer = () => {
             {/* Social Links Row */}
             <div className="flex gap-4 mt-2">
               <a 
-                href="#instagram" 
+                href={settings.instagramId ? (settings.instagramId.startsWith('http') ? settings.instagramId : `https://instagram.com/${settings.instagramId}`) : '#'} 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full border border-white/5 bg-dark-surface/40 flex items-center justify-center text-gray-400 hover:text-neon-lime hover:border-neon-lime/30 transition-all duration-300 shadow-lg"
                 aria-label="Instagram Link"
               >
                 <FiInstagram className="text-base" />
-              </a>
-              <a 
-                href="#twitter" 
-                className="w-10 h-10 rounded-full border border-white/5 bg-dark-surface/40 flex items-center justify-center text-gray-400 hover:text-neon-cyan hover:border-neon-cyan/30 transition-all duration-300 shadow-lg"
-                aria-label="Twitter Link"
-              >
-                <FiTwitter className="text-base" />
-              </a>
-              <a 
-                href="#youtube" 
-                className="w-10 h-10 rounded-full border border-white/5 bg-dark-surface/40 flex items-center justify-center text-gray-400 hover:text-neon-pink hover:border-neon-pink/30 transition-all duration-300 shadow-lg"
-                aria-label="YouTube Link"
-              >
-                <FiYoutube className="text-base" />
               </a>
             </div>
           </div>
@@ -130,12 +121,32 @@ const Footer = () => {
                   {settings.contactAddress}
                 </span>
               </div>
-              <div className="flex items-center gap-3">
-                <FiPhone className="text-neon-cyan text-base flex-shrink-0" />
-                <a href={`tel:${settings.contactPhone}`} className="text-xs text-gray-500 hover:text-white transition-colors duration-300 font-sans">
-                  {settings.contactPhone}
-                </a>
-              </div>
+              {settings.ownerPhone ? (
+                <div className="flex items-center gap-3">
+                  <FiPhone className="text-neon-cyan text-base flex-shrink-0" />
+                  <a href={`tel:${settings.ownerPhone}`} className="text-xs text-gray-500 hover:text-white transition-colors duration-300 font-sans">
+                    <span className="text-white/60 mr-1 font-bold">Owner:</span>{settings.ownerPhone}
+                  </a>
+                </div>
+              ) : (
+                !settings.receptionPhone && settings.contactPhone && (
+                  <div className="flex items-center gap-3">
+                    <FiPhone className="text-neon-cyan text-base flex-shrink-0" />
+                    <a href={`tel:${settings.contactPhone}`} className="text-xs text-gray-500 hover:text-white transition-colors duration-300 font-sans">
+                      {settings.contactPhone}
+                    </a>
+                  </div>
+                )
+              )}
+
+              {settings.receptionPhone && (
+                <div className="flex items-center gap-3">
+                  <FiPhone className="text-neon-cyan text-base flex-shrink-0" />
+                  <a href={`tel:${settings.receptionPhone}`} className="text-xs text-gray-500 hover:text-white transition-colors duration-300 font-sans">
+                    <span className="text-white/60 mr-1 font-bold">Reception:</span>{settings.receptionPhone}
+                  </a>
+                </div>
+              )}
               <div className="flex items-center gap-3">
                 <FiMail className="text-neon-cyan text-base flex-shrink-0" />
                 <a href={`mailto:${settings.contactEmail}`} className="text-xs text-gray-500 hover:text-white transition-colors duration-300 font-sans">

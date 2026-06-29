@@ -72,6 +72,18 @@
     "aboutCoaches": "24",
     "contactEmail": "info@musclecraftgym.com",
     "contactPhone": "+1 (555) 000-0000",
-    "contactAddress": "123 Gym Street, Fitness City"
+    "contactAddress": "123 Gym Street, Fitness City",
+    "instagramId": "musclecraftfitness",
+    "ownerPhone": "8439919640",
+    "receptionPhone": "",
+    "basicPrice": "200",
+    "basicPeriod": "1-Day Trial Pass",
+    "standardPrice": "8,000",
+    "standardPeriod": "for 6 months",
+    "elitePrice": "12,000",
+    "elitePeriod": "for 1 year",
+    "aboutPhoto": "",
+    "estYear": "2014",
+    "estTagline": "12 Years of Athletic Innovation"
   }
 }

@@ -16,7 +16,10 @@ const About = () => {
   const [settings, setSettings] = useState({
     aboutYears: "12",
     aboutMembers: "8500",
-    aboutCoaches: "24"
+    aboutCoaches: "24",
+    aboutPhoto: "",
+    estYear: "2014",
+    estTagline: "12 Years of Athletic Innovation"
   })
   const [settingsLoaded, setSettingsLoaded] = useState(false)
 
@@ -29,7 +32,10 @@ const About = () => {
           setSettings({
             aboutYears: data.aboutYears || "12",
             aboutMembers: data.aboutMembers || "8500",
-            aboutCoaches: data.aboutCoaches || "24"
+            aboutCoaches: data.aboutCoaches || "24",
+            aboutPhoto: data.aboutPhoto || "",
+            estYear: data.estYear || "2014",
+            estTagline: data.estTagline || "12 Years of Athletic Innovation"
           })
         }
         setSettingsLoaded(true)
@@ -155,7 +161,7 @@ const About = () => {
             <div className="w-full h-full rounded-2xl overflow-hidden shadow-2xl relative border border-white/10">
               <img 
                 ref={imageRef}
-                src={aboutGym} 
+                src={settings.aboutPhoto || aboutGym} 
                 alt="Muscle Craft Gym Interior" 
                 className="w-full h-full object-cover object-center scale-125"
               />
@@ -163,8 +169,8 @@ const About = () => {
 
             {/* Overlapping Glassmorphic Badge */}
             <div className="absolute bottom-6 right-6 z-20 glass-card px-5 py-4 rounded-xl max-w-[180px] shadow-glass shadow-black/45">
-              <div className="text-2xl font-extrabold font-display text-neon-lime leading-tight tracking-wider">EST. 2014</div>
-              <div className="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mt-1">12 Years of Athletic Innovation</div>
+              <div className="text-2xl font-extrabold font-display text-neon-lime leading-tight tracking-wider">EST. {settings.estYear}</div>
+              <div className="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mt-1">{settings.estTagline}</div>
             </div>
           </div>
 

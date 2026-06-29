@@ -30,11 +30,30 @@ function Settings() {
     const [aboutYears, setAboutYears] = useState("")
     const [aboutMembers, setAboutMembers] = useState("")
     const [aboutCoaches, setAboutCoaches] = useState("")
+    const [estYear, setEstYear] = useState("")
+    const [estTagline, setEstTagline] = useState("")
     
     // Contact Info
     const [contactEmail, setContactEmail] = useState("")
     const [contactPhone, setContactPhone] = useState("")
     const [contactAddress, setContactAddress] = useState("")
+    const [instagramId, setInstagramId] = useState("")
+    const [ownerPhone, setOwnerPhone] = useState("")
+    const [receptionPhone, setReceptionPhone] = useState("")
+
+    // Pricing Tiers
+    const [basicPrice, setBasicPrice] = useState("")
+    const [basicPeriod, setBasicPeriod] = useState("")
+    const [standardPrice, setStandardPrice] = useState("")
+    const [standardPeriod, setStandardPeriod] = useState("")
+    const [elitePrice, setElitePrice] = useState("")
+    const [elitePeriod, setElitePeriod] = useState("")
+
+    // About Photo
+    const [aboutPhoto, setAboutPhoto] = useState("")
+    const [aboutPhotoFile, setAboutPhotoFile] = useState(null)
+    const [aboutPhotoPreview, setAboutPhotoPreview] = useState("")
+    const [photoUploading, setPhotoUploading] = useState(false)
 
     const fetchSettings = async () => {
         setLoading(true)
@@ -52,9 +71,22 @@ function Settings() {
             setAboutYears(data.aboutYears || "12")
             setAboutMembers(data.aboutMembers || "8500")
             setAboutCoaches(data.aboutCoaches || "24")
+            setEstYear(data.estYear || "2014")
+            setEstTagline(data.estTagline || "12 Years of Athletic Innovation")
             setContactEmail(data.contactEmail || "")
             setContactPhone(data.contactPhone || "")
             setContactAddress(data.contactAddress || "")
+            setInstagramId(data.instagramId || "")
+            setOwnerPhone(data.ownerPhone || "")
+            setReceptionPhone(data.receptionPhone || "")
+            setBasicPrice(data.basicPrice || "200")
+            setBasicPeriod(data.basicPeriod || "1-Day Trial Pass")
+            setStandardPrice(data.standardPrice || "8,000")
+            setStandardPeriod(data.standardPeriod || "for 6 months")
+            setElitePrice(data.elitePrice || "12,000")
+            setElitePeriod(data.elitePeriod || "for 1 year")
+            setAboutPhoto(data.aboutPhoto || "")
+            setAboutPhotoPreview(data.aboutPhoto || "")
         } catch (error) {
             console.error(error)
             toast.error("Failed to load settings")
@@ -84,7 +116,18 @@ function Settings() {
                 aboutCoaches,
                 contactEmail,
                 contactPhone,
-                contactAddress
+                contactAddress,
+                instagramId,
+                ownerPhone,
+                receptionPhone,
+                basicPrice,
+                basicPeriod,
+                standardPrice,
+                standardPeriod,
+                elitePrice,
+                elitePeriod,
+                estYear,
+                estTagline
             }
             const token = localStorage.getItem('adminToken')
             const headers = token ? { Authorization: `Bearer ${token}` } : {}
@@ -101,6 +144,37 @@ function Settings() {
 
     const inputClass = 'w-full h-[44px] rounded-xl px-[14px] text-gray-800 text-[14px] placeholder-gray-300 outline-none focus:ring-2 focus:ring-gray-300 bg-gray-50 border border-gray-200'
     const labelClass = 'text-[12px] font-semibold text-gray-500 uppercase tracking-wider mb-[6px] block'
+
+    const handleAboutPhotoChange = (e) => {
+        const file = e.target.files[0]
+        if (!file) return
+        setAboutPhotoFile(file)
+        setAboutPhotoPreview(URL.createObjectURL(file))
+    }
+
+    const handleAboutPhotoUpload = async () => {
+        if (!aboutPhotoFile) return toast.error('Please select a photo first')
+        setPhotoUploading(true)
+        try {
+            const formData = new FormData()
+            formData.append('photo', aboutPhotoFile)
+            const token = localStorage.getItem('adminToken')
+            const headers = token ? { Authorization: `Bearer ${token}` } : {}
+            const res = await axios.post(`${serverUrl}/api/settings/about-photo`, formData, {
+                headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            })
+            if (res.data.success) {
+                setAboutPhoto(res.data.aboutPhoto)
+                setAboutPhotoFile(null)
+                toast.success('About photo uploaded successfully!')
+            }
+        } catch (error) {
+            console.error(error)
+            toast.error('Failed to upload about photo')
+        }
+        setPhotoUploading(false)
+    }
 
     return (
         <div className='w-[100vw] min-h-[100vh] bg-gray-50'>
@@ -264,11 +338,34 @@ function Settings() {
                                         />
                                     </div>
                                 </div>
+                                {/* EST Year & Tagline */}
+                                <div className='grid grid-cols-1 md:grid-cols-2 gap-[20px] mt-4'>
+                                    <div>
+                                        <label className={labelClass}>EST. Year (Photo Badge)</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="e.g. 2014" 
+                                            className={inputClass} 
+                                            value={estYear} 
+                                            onChange={(e) => setEstYear(e.target.value)} 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className={labelClass}>EST. Tagline (Photo Badge)</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="e.g. 12 Years of Athletic Innovation" 
+                                            className={inputClass} 
+                                            value={estTagline} 
+                                            onChange={(e) => setEstTagline(e.target.value)} 
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Footer & Contact */}
                             <div>
-                                <h3 className='text-[15px] font-bold text-gray-800 border-b border-gray-100 pb-2 mb-4'>5. Footer Contact Details</h3>
+                                <h3 className='text-[15px] font-bold text-gray-800 border-b border-gray-100 pb-2 mb-4'>5. Footer Contact & Social Details</h3>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-[20px] mb-4'>
                                     <div>
                                         <label className={labelClass}>Contact Email</label>
@@ -281,13 +378,35 @@ function Settings() {
                                         />
                                     </div>
                                     <div>
-                                        <label className={labelClass}>Contact Phone</label>
+                                        <label className={labelClass}>Owner Phone</label>
                                         <input 
                                             type="text" 
                                             className={inputClass} 
-                                            value={contactPhone} 
-                                            onChange={(e) => setContactPhone(e.target.value)} 
-                                            required 
+                                            value={ownerPhone} 
+                                            onChange={(e) => setOwnerPhone(e.target.value)} 
+                                            placeholder="e.g. 8439919640"
+                                        />
+                                    </div>
+                                </div>
+                                <div className='grid grid-cols-1 md:grid-cols-2 gap-[20px] mb-4'>
+                                    <div>
+                                        <label className={labelClass}>Reception Phone</label>
+                                        <input 
+                                            type="text" 
+                                            className={inputClass} 
+                                            value={receptionPhone} 
+                                            onChange={(e) => setReceptionPhone(e.target.value)} 
+                                            placeholder="e.g. 8439919640"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className={labelClass}>Instagram Username/ID</label>
+                                        <input 
+                                            type="text" 
+                                            className={inputClass} 
+                                            value={instagramId} 
+                                            onChange={(e) => setInstagramId(e.target.value)} 
+                                            placeholder="e.g. musclecraftfitness"
                                         />
                                     </div>
                                 </div>
@@ -303,6 +422,98 @@ function Settings() {
                                 </div>
                             </div>
 
+                            {/* Pricing Plans Config */}
+                            <div>
+                                <h3 className='text-[15px] font-bold text-gray-800 border-b border-gray-100 pb-2 mb-4'>6. Pricing Plans Config</h3>
+                                
+                                {/* Basic Access */}
+                                <div className='mb-6'>
+                                    <h4 className='text-[13px] font-bold text-gray-600 mb-3 uppercase tracking-wider'>Basic Access Plan</h4>
+                                    <div className='grid grid-cols-1 md:grid-cols-2 gap-[20px]'>
+                                        <div>
+                                            <label className={labelClass}>Price (₹)</label>
+                                            <input 
+                                                type="text" 
+                                                className={inputClass} 
+                                                value={basicPrice} 
+                                                onChange={(e) => setBasicPrice(e.target.value)} 
+                                                required 
+                                                placeholder="e.g. 200"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={labelClass}>Period/Duration Text</label>
+                                            <input 
+                                                type="text" 
+                                                className={inputClass} 
+                                                value={basicPeriod} 
+                                                onChange={(e) => setBasicPeriod(e.target.value)} 
+                                                required 
+                                                placeholder="e.g. 1-Day Trial Pass"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Standard Tier */}
+                                <div className='mb-6'>
+                                    <h4 className='text-[13px] font-bold text-gray-600 mb-3 uppercase tracking-wider'>Standard Tier Plan</h4>
+                                    <div className='grid grid-cols-1 md:grid-cols-2 gap-[20px]'>
+                                        <div>
+                                            <label className={labelClass}>Price (₹)</label>
+                                            <input 
+                                                type="text" 
+                                                className={inputClass} 
+                                                value={standardPrice} 
+                                                onChange={(e) => setStandardPrice(e.target.value)} 
+                                                required 
+                                                placeholder="e.g. 8,000"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={labelClass}>Period/Duration Text</label>
+                                            <input 
+                                                type="text" 
+                                                className={inputClass} 
+                                                value={standardPeriod} 
+                                                onChange={(e) => setStandardPeriod(e.target.value)} 
+                                                required 
+                                                placeholder="e.g. for 6 months"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Elite Premium */}
+                                <div className='mb-2'>
+                                    <h4 className='text-[13px] font-bold text-gray-600 mb-3 uppercase tracking-wider'>Elite Premium Plan</h4>
+                                    <div className='grid grid-cols-1 md:grid-cols-2 gap-[20px]'>
+                                        <div>
+                                            <label className={labelClass}>Price (₹)</label>
+                                            <input 
+                                                type="text" 
+                                                className={inputClass} 
+                                                value={elitePrice} 
+                                                onChange={(e) => setElitePrice(e.target.value)} 
+                                                required 
+                                                placeholder="e.g. 12,000"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={labelClass}>Period/Duration Text</label>
+                                            <input 
+                                                type="text" 
+                                                className={inputClass} 
+                                                value={elitePeriod} 
+                                                onChange={(e) => setElitePeriod(e.target.value)} 
+                                                required 
+                                                placeholder="e.g. for 1 year"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* Submit */}
                             <button
                                 type="submit"
@@ -313,6 +524,45 @@ function Settings() {
                             </button>
 
                         </form>
+
+                        {/* About Section Photo — Separate Upload Card */}
+                        <div className='mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm p-[32px] max-w-[820px]'>
+                            <h3 className='text-[15px] font-bold text-gray-800 border-b border-gray-100 pb-2 mb-4'>7. About Section Photo</h3>
+                            <p className='text-[12px] text-gray-400 mb-5'>About page par left side mein jo photo dikhti hai, use yahan se change karein.</p>
+                            <div className='flex flex-col md:flex-row gap-6 items-start'>
+                                {/* Preview */}
+                                <div className='w-full md:w-[200px] h-[220px] rounded-xl overflow-hidden border border-gray-200 bg-gray-100 flex-shrink-0'>
+                                    {aboutPhotoPreview ? (
+                                        <img src={aboutPhotoPreview} alt='About Preview' className='w-full h-full object-cover' />
+                                    ) : (
+                                        <div className='w-full h-full flex items-center justify-center text-gray-400 text-[12px] font-medium'>No Photo</div>
+                                    )}
+                                </div>
+                                {/* Upload Controls */}
+                                <div className='flex flex-col gap-4 flex-1'>
+                                    <div>
+                                        <label className={labelClass}>Choose New Photo</label>
+                                        <input 
+                                            type='file' 
+                                            accept='image/*'
+                                            onChange={handleAboutPhotoChange}
+                                            className='w-full text-[13px] text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[12px] file:font-semibold file:bg-gray-900 file:text-white hover:file:bg-gray-700 cursor-pointer'
+                                        />
+                                    </div>
+                                    {aboutPhotoFile && (
+                                        <p className='text-[11px] text-gray-400'>Selected: {aboutPhotoFile.name} ({(aboutPhotoFile.size / 1024 / 1024).toFixed(2)} MB)</p>
+                                    )}
+                                    <button
+                                        type='button'
+                                        onClick={handleAboutPhotoUpload}
+                                        disabled={photoUploading || !aboutPhotoFile}
+                                        className='w-fit px-[24px] h-[42px] rounded-full bg-gradient-to-r from-gray-900 to-black text-white font-bold text-[13px] flex items-center justify-center gap-[8px] hover:shadow-lg hover:shadow-gray-200 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed'
+                                    >
+                                        {photoUploading ? <Loading /> : <><FiSave /> Upload Photo</>}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

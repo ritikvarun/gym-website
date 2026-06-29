@@ -25,6 +25,33 @@ const CTA = () => {
   const [status, setStatus] = useState('idle') // idle, submitting, success, error
   const [errorMessage, setErrorMessage] = useState('')
   const [whatsappUrl, setWhatsappUrl] = useState('')
+  const [settings, setSettings] = useState({
+    basicPrice: "200",
+    basicPeriod: "1-Day Trial Pass",
+    standardPrice: "8,000",
+    standardPeriod: "for 6 months",
+    elitePrice: "12,000",
+    elitePeriod: "for 1 year"
+  })
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/settings`)
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          setSettings(prev => ({
+            ...prev,
+            basicPrice: data.basicPrice || prev.basicPrice,
+            basicPeriod: data.basicPeriod || prev.basicPeriod,
+            standardPrice: data.standardPrice || prev.standardPrice,
+            standardPeriod: data.standardPeriod || prev.standardPeriod,
+            elitePrice: data.elitePrice || prev.elitePrice,
+            elitePeriod: data.elitePeriod || prev.elitePeriod
+          }))
+        }
+      })
+      .catch(err => console.log("Using default fallback CTA settings:", err.message))
+  }, [])
 
   useEffect(() => {
     // ScrollReveal for text elements
@@ -123,9 +150,9 @@ const CTA = () => {
 
   // Map option keys to user-friendly titles
   const planTitles = {
-    trial: 'Basic Access (1-Day TrialPass — ₹200)',
-    standard: 'Standard Tier (6 Months — ₹8,000)',
-    elite: 'Elite Premium (1 Year — ₹12,000)'
+    trial: `Basic Access (${settings.basicPeriod} — ₹${settings.basicPrice})`,
+    standard: `Standard Tier (${settings.standardPeriod} — ₹${settings.standardPrice})`,
+    elite: `Elite Premium (${settings.elitePeriod} — ₹${settings.elitePrice})`
   }
 
   const handleSubmit = async (e) => {
@@ -377,9 +404,9 @@ const CTA = () => {
                         required
                         className="w-full bg-white/5 border border-white/10 focus:border-neon-lime/40 rounded-xl pl-11 pr-10 py-3.5 text-xs text-white appearance-none focus:outline-none focus:ring-1 focus:ring-neon-lime/20 transition-all font-sans cursor-pointer"
                       >
-                        <option value="trial" className="bg-[#0c0c0e] text-white">Basic Access (1-Day TrialPass — ₹200)</option>
-                        <option value="standard" className="bg-[#0c0c0e] text-white">Standard Tier (6 Months — ₹8,000)</option>
-                        <option value="elite" className="bg-[#0c0c0e] text-white">Elite Premium (1 Year — ₹12,000)</option>
+                        <option value="trial" className="bg-[#0c0c0e] text-white">Basic Access ({settings.basicPeriod} — ₹{settings.basicPrice})</option>
+                        <option value="standard" className="bg-[#0c0c0e] text-white">Standard Tier ({settings.standardPeriod} — ₹{settings.standardPrice})</option>
+                        <option value="elite" className="bg-[#0c0c0e] text-white">Elite Premium ({settings.elitePeriod} — ₹{settings.elitePrice})</option>
                       </select>
                       {/* Down Arrow Indicator */}
                       <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-500">
