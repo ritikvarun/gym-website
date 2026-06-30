@@ -18,7 +18,7 @@ const CTA = () => {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
-  const [plan, setPlan] = useState('trial')
+  const [plan, setPlan] = useState('trial_pass')
   const [message, setMessage] = useState('')
   
   // Status states
@@ -102,8 +102,10 @@ const CTA = () => {
     const handleHashChange = () => {
       const hash = window.location.hash;
       let selected = '';
-      if (hash === '#join-basic') {
-        selected = 'trial';
+      if (hash === '#join-trial') {
+        selected = 'trial_pass';
+      } else if (hash === '#join-basic') {
+        selected = 'basic';
       } else if (hash === '#join-standard') {
         selected = 'standard';
       } else if (hash === '#join-elite') {
@@ -158,14 +160,16 @@ const CTA = () => {
 
   // Map option keys to user-friendly titles
   const planTitles = {
-    trial: `Basic Access (${settings.basicPeriod} — ₹${settings.basicPrice})`,
+    trial_pass: '1-Day Trial Pass (Adjustable — ₹200)',
+    basic: `Basic Access (${settings.basicPeriod} — ₹${settings.basicPrice})`,
     standard: `Standard Tier (${settings.standardPeriod} — ₹${settings.standardPrice})`,
     elite: `Elite Premium (${settings.elitePeriod} — ₹${settings.elitePrice})`
   }
 
   const getCleanPrice = (planKey) => {
     let priceStr = '';
-    if (planKey === 'trial') priceStr = settings.basicPrice;
+    if (planKey === 'trial_pass') priceStr = '200';
+    else if (planKey === 'basic') priceStr = settings.basicPrice;
     else if (planKey === 'standard') priceStr = settings.standardPrice;
     else if (planKey === 'elite') priceStr = settings.elitePrice;
     return priceStr.replace(/[^0-9.]/g, '');
@@ -198,13 +202,23 @@ const CTA = () => {
       if (data.success) {
         const cleanAmount = getCleanPrice(plan)
         setSubmittedName(name)
-        setSubmittedPlan(plan === 'trial' ? 'Basic Access' : plan === 'standard' ? 'Standard Tier' : 'Elite Premium')
+        setSubmittedPlan(
+          plan === 'trial_pass' ? '1-Day Trial Pass' :
+          plan === 'basic' ? 'Basic Access' :
+          plan === 'standard' ? 'Standard Tier' :
+          'Elite Premium'
+        )
         setSubmittedAmount(cleanAmount)
 
         // UPI deep link
         const upiId = settings.upiId || 'musclecraft@upi'
         const upiName = settings.upiName || 'Muscle Craft Fitness Club'
-        const transactionNote = `${name} - ${plan === 'trial' ? 'Basic' : plan === 'standard' ? 'Standard' : 'Elite'}`
+        const transactionNote = `${name} - ${
+          plan === 'trial_pass' ? 'Trial Pass' :
+          plan === 'basic' ? 'Basic' :
+          plan === 'standard' ? 'Standard' :
+          'Elite'
+        }`
         const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${cleanAmount}&cu=INR&tn=${encodeURIComponent(transactionNote)}`
         setUpiUrl(upiLink)
 
@@ -467,7 +481,8 @@ const CTA = () => {
                         required
                         className="w-full bg-white/5 border border-white/10 focus:border-neon-lime/40 rounded-xl pl-11 pr-10 py-3.5 text-xs text-white appearance-none focus:outline-none focus:ring-1 focus:ring-neon-lime/20 transition-all font-sans cursor-pointer"
                       >
-                        <option value="trial" className="bg-[#0c0c0e] text-white">Basic Access ({settings.basicPeriod} — ₹{settings.basicPrice})</option>
+                        <option value="trial_pass" className="bg-[#0c0c0e] text-white">1-Day Trial Pass (Adjustable — ₹200)</option>
+                        <option value="basic" className="bg-[#0c0c0e] text-white">Basic Access ({settings.basicPeriod} — ₹{settings.basicPrice})</option>
                         <option value="standard" className="bg-[#0c0c0e] text-white">Standard Tier ({settings.standardPeriod} — ₹{settings.standardPrice})</option>
                         <option value="elite" className="bg-[#0c0c0e] text-white">Elite Premium ({settings.elitePeriod} — ₹{settings.elitePrice})</option>
                       </select>

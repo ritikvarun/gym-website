@@ -83,8 +83,6 @@ const Pricing = () => {
       name: 'Basic Access',
       price: settings.basicPrice,
       period: settings.basicPeriod,
-      trial: `₹${settings.basicPrice}`,
-      trialNote: 'Adjusted in membership if you join',
       desc: 'Essential conditioning tools for the self-guided athlete.',
       features: [
         { title: 'Gym Access', desc: 'Standard hours (5:00 AM - 10:00 PM)' },
