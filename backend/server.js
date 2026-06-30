@@ -232,6 +232,9 @@ const allowedOrigins = [
   // Production Vercel URLs
   'https://gym-website-pearl-three.vercel.app', // Frontend URL
   'https://gym-website-n5zn.vercel.app',        // Admin URL
+  // Custom domains
+  'https://www.musclecraftfitnessgym.in',
+  'https://musclecraftfitnessgym.in',
 ];
 
 app.use(cors({
