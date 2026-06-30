@@ -101,7 +101,9 @@ const defaultDb = {
     elitePeriod: "for 1 year",
     aboutPhoto: "",
     estYear: "2014",
-    estTagline: "12 Years of Athletic Innovation"
+    estTagline: "12 Years of Athletic Innovation",
+    upiId: "",
+    upiName: ""
   }
 };
 
@@ -154,7 +156,9 @@ const settingsSchema = new mongoose.Schema({
   elitePeriod: { type: String, default: "for 1 year" },
   aboutPhoto: { type: String, default: "" },
   estYear: { type: String, default: "2014" },
-  estTagline: { type: String, default: "12 Years of Athletic Innovation" }
+  estTagline: { type: String, default: "12 Years of Athletic Innovation" },
+  upiId: { type: String, default: "" },
+  upiName: { type: String, default: "" }
 });
 const SettingsModel = mongoose.model('Settings', settingsSchema);
 
@@ -228,7 +232,11 @@ const LeadModel = mongoose.model('Lead', leadSchema);
 // CORS configuration - allow admin and frontend origins
 const allowedOrigins = [
   'http://localhost:5173', // Frontend local
+  'http://127.0.0.1:5173', // Frontend local IP
   'http://localhost:5174', // Admin Panel local
+  'http://127.0.0.1:5174', // Admin Panel local IP
+  'http://localhost:5175', // Admin Panel local alternative port
+  'http://127.0.0.1:5175', // Admin Panel local IP alternative port
   // Production Vercel URLs
   'https://gym-website-pearl-three.vercel.app', // Frontend URL
   'https://gym-website-n5zn.vercel.app',        // Admin URL
@@ -245,6 +253,7 @@ app.use(cors({
     if (origin.endsWith('.vercel.app')) return callback(null, true);
     // Allow listed origins
     if (allowedOrigins.indexOf(origin) !== -1) return callback(null, true);
+    console.log("❌ Blocked by CORS. Origin was:", origin);
     callback(new Error('Not allowed by CORS'));
   },
 
@@ -354,13 +363,19 @@ app.get('/api/settings', async (req, res) => {
       if (!settings) {
         settings = await SettingsModel.create(defaultDb.settings);
       }
-      return res.json(settings);
+      const settingsObj = settings.toObject ? settings.toObject() : settings;
+      settingsObj.upiId = process.env.UPI_ID || settingsObj.upiId || '';
+      settingsObj.upiName = process.env.UPI_NAME || settingsObj.upiName || '';
+      return res.json(settingsObj);
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
     }
   } else {
     const db = readLocalDb();
-    res.json(db.settings || defaultDb.settings);
+    const settingsObj = { ...(db.settings || defaultDb.settings) };
+    settingsObj.upiId = process.env.UPI_ID || settingsObj.upiId || '';
+    settingsObj.upiName = process.env.UPI_NAME || settingsObj.upiName || '';
+    res.json(settingsObj);
   }
 });
 

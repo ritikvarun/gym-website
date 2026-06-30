@@ -25,13 +25,19 @@ const CTA = () => {
   const [status, setStatus] = useState('idle') // idle, submitting, success, error
   const [errorMessage, setErrorMessage] = useState('')
   const [whatsappUrl, setWhatsappUrl] = useState('')
+  const [upiUrl, setUpiUrl] = useState('')
+  const [submittedName, setSubmittedName] = useState('')
+  const [submittedPlan, setSubmittedPlan] = useState('')
+  const [submittedAmount, setSubmittedAmount] = useState('')
   const [settings, setSettings] = useState({
     basicPrice: "200",
     basicPeriod: "1-Day Trial Pass",
     standardPrice: "8,000",
     standardPeriod: "for 6 months",
     elitePrice: "12,000",
-    elitePeriod: "for 1 year"
+    elitePeriod: "for 1 year",
+    upiId: "",
+    upiName: ""
   })
 
   useEffect(() => {
@@ -46,7 +52,9 @@ const CTA = () => {
             standardPrice: data.standardPrice || prev.standardPrice,
             standardPeriod: data.standardPeriod || prev.standardPeriod,
             elitePrice: data.elitePrice || prev.elitePrice,
-            elitePeriod: data.elitePeriod || prev.elitePeriod
+            elitePeriod: data.elitePeriod || prev.elitePeriod,
+            upiId: data.upiId || prev.upiId,
+            upiName: data.upiName || prev.upiName
           }))
         }
       })
@@ -155,6 +163,14 @@ const CTA = () => {
     elite: `Elite Premium (${settings.elitePeriod} — ₹${settings.elitePrice})`
   }
 
+  const getCleanPrice = (planKey) => {
+    let priceStr = '';
+    if (planKey === 'trial') priceStr = settings.basicPrice;
+    else if (planKey === 'standard') priceStr = settings.standardPrice;
+    else if (planKey === 'elite') priceStr = settings.elitePrice;
+    return priceStr.replace(/[^0-9.]/g, '');
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('submitting')
@@ -180,9 +196,21 @@ const CTA = () => {
       const data = await response.json()
 
       if (data.success) {
+        const cleanAmount = getCleanPrice(plan)
+        setSubmittedName(name)
+        setSubmittedPlan(plan === 'trial' ? 'Basic Access' : plan === 'standard' ? 'Standard Tier' : 'Elite Premium')
+        setSubmittedAmount(cleanAmount)
+
+        // UPI deep link
+        const upiId = settings.upiId || 'musclecraft@upi'
+        const upiName = settings.upiName || 'Muscle Craft Fitness Club'
+        const transactionNote = `${name} - ${plan === 'trial' ? 'Basic' : plan === 'standard' ? 'Standard' : 'Elite'}`
+        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${cleanAmount}&cu=INR&tn=${encodeURIComponent(transactionNote)}`
+        setUpiUrl(upiLink)
+
         // Construct WhatsApp URL
         const cleanPhone = data.whatsappNumber ? data.whatsappNumber.replace(/\D/g, '') : '919876543210'
-        const customMessage = `Hi Muscle Craft Gym! 🚀\n\nI just filled out the trial/plan registration form on your website. Here are my details:\n\n👤 *Name*: ${name}\n📞 *Phone*: ${phone}\n📍 *Address*: ${address}\n💪 *Plan Selected*: ${planTitles[plan]}\n${message ? `📝 *My Goals*: "${message}"\n` : ''}\nPlease confirm my registration pass! Thanks!`
+        const customMessage = `Hi Muscle Craft Gym! 🚀\n\nI just filled out the trial/plan registration form on your website. Here are my details:\n\n👤 *Name*: ${name}\n📞 *Phone*: ${phone}\n📍 *Address*: ${address}\n💪 *Plan Selected*: ${planTitles[plan]}\n💳 *Paid Amount*: ₹${cleanAmount} via UPI\n${message ? `📝 *My Goals*: "${message}"\n` : ''}\nI am attaching my payment screenshot. Please confirm my registration pass! Thanks!`
         const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(customMessage)}`
         
         setWhatsappUrl(waLink)
@@ -289,11 +317,46 @@ const CTA = () => {
                   <div className="w-16 h-16 rounded-full bg-neon-lime/10 border border-neon-lime/40 flex items-center justify-center text-neon-lime mb-6 animate-pulse">
                     <FiCheckCircle size={36} />
                   </div>
-                  <h3 className="font-display text-2xl font-black text-white uppercase tracking-tight mb-4">
+                  <h3 className="font-display text-2xl font-black text-white uppercase tracking-tight mb-4 text-center">
                     REGISTRATION RECEIVED!
                   </h3>
-                  <p className="text-xs text-gray-400 font-sans leading-relaxed max-w-sm mb-8">
-                    Your trial pass request is saved to our server and our team has been emailed. To accelerate your confirmation, click the WhatsApp button below to instantly connect with us!
+                  
+                  {settings.upiId ? (
+                    <div className="flex flex-col items-center bg-white/5 border border-white/10 rounded-3xl p-6 mb-6 w-full">
+                      <p className="text-[10px] font-bold text-neon-lime uppercase tracking-widest mb-3">Scan to Pay via UPI</p>
+                      
+                      <div className="p-3 bg-white rounded-xl shadow-lg border border-neon-lime/30 mb-3">
+                        <img 
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiUrl)}`}
+                          alt="UPI QR Code"
+                          className="w-[180px] h-[180px]"
+                        />
+                      </div>
+                      
+                      <div className="text-center mb-4">
+                        <p className="text-xs text-gray-400 font-sans">Amount to Pay: <span className="text-sm font-black text-white">₹{submittedAmount}</span></p>
+                        <p className="text-[9px] text-gray-500 font-sans mt-0.5">UPI ID: {settings.upiId}</p>
+                      </div>
+
+                      {/* Direct UPI pay button (Mobile deep link) */}
+                      <a 
+                        href={upiUrl}
+                        className="w-full py-3 rounded-xl bg-neon-lime/10 border border-neon-lime/30 hover:bg-neon-lime/20 text-neon-lime text-[11px] font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 mb-2 active:scale-[0.98]"
+                      >
+                        ⚡ Pay via UPI App (GPay/PhonePe)
+                      </a>
+                      
+                      <p className="text-[9px] text-gray-500 font-sans text-center">
+                        Tap above to pay directly from your mobile UPI apps.
+                      </p>
+                    </div>
+                  ) : null}
+
+                  <p className="text-xs text-gray-400 font-sans leading-relaxed max-w-sm mb-6 text-center">
+                    {settings.upiId 
+                      ? `Please complete your payment of ₹${submittedAmount} using the QR code or the UPI App button. After paying, click below to send the payment screenshot on WhatsApp to activate your pass!`
+                      : "Your trial pass request is saved to our server and our team has been emailed. To accelerate your confirmation, click the WhatsApp button below to instantly connect with us!"
+                    }
                   </p>
                   
                   <a 
@@ -306,7 +369,7 @@ const CTA = () => {
                     <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                       <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.335 4.978L2 22l5.197-1.36a9.944 9.944 0 0 0 4.814 1.238h.005c5.504 0 9.99-4.478 9.99-9.985a9.965 9.965 0 0 0-9.994-9.893zm5.728 14.103c-.244.69-1.213 1.25-1.666 1.302-.454.053-.9.278-2.914-.526-2.427-.97-3.99-3.447-4.11-3.608-.122-.162-1.002-1.335-1.002-2.54 0-1.206.634-1.8 1.002-2.185.367-.387.807-.484 1.077-.484.269 0 .538.005.772.016.244.011.562-.09.88.66.318.75 1.088 2.658 1.185 2.854.098.194.162.42.033.678-.13.258-.2.42-.392.646-.194.226-.408.506-.58.694-.194.21-.398.436-.172.823a13.61 13.61 0 0 0 2.49 3.09 11.23 11.23 0 0 0 3.597 2.217c.392.177.624.15.855-.113.23-.263.99-1.145 1.258-1.532.269-.387.538-.323.899-.194.36.129 2.28 1.075 2.671 1.269.393.194.656.29.753.452.097.162.097.936-.147 1.626z" />
                     </svg>
-                    Connect on WhatsApp
+                    Send Screenshot on WhatsApp
                   </a>
 
                   <button
