@@ -166,7 +166,7 @@ const Gallery = () => {
         </div>
 
         {/* Masonry Grid layout */}
-        <div className="grid grid-cols-2 gap-4 items-start sm:block sm:columns-2 lg:columns-3 sm:gap-8 w-full max-w-6xl mx-auto">
+        <div className="columns-2 gap-4 sm:gap-8 lg:columns-3 w-full max-w-6xl mx-auto">
           {galleryItems.map((item, idx) => (
             <div 
               key={idx}
