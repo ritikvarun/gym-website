@@ -1,7 +1,7 @@
 const isLocal = typeof window !== 'undefined' && 
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-export const API_URL = isLocal 
+export const API_URL = (isLocal 
   ? 'http://localhost:5000' 
-  : (import.meta.env.VITE_API_URL || 'https://gym-website-backend-f7m6.onrender.com');
+  : (import.meta.env.VITE_API_URL || 'https://gym-website-backend-f7m6.onrender.com')).replace(/\/+$/, "");
 
