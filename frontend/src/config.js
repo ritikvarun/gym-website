@@ -3,5 +3,5 @@ const isLocal = typeof window !== 'undefined' &&
 
 export const API_URL = isLocal 
   ? 'http://localhost:5000' 
-  : (import.meta.env.VITE_API_URL || 'https://gym-backend-7h79.onrender.com');
+  : (import.meta.env.VITE_API_URL || 'https://gym-website-backend-f7m6.onrender.com');
 
