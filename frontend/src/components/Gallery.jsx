@@ -8,6 +8,7 @@ import gallery4 from '../assets/gallery_4.webp'
 import gallery5 from '../assets/gallery_5.webp'
 import gallery6 from '../assets/gallery_6.webp'
 import { API_URL } from '../config'
+import { IoCloseOutline, IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -16,6 +17,72 @@ const Gallery = () => {
   const sectionRef = useRef(null)
   const [galleryItems, setGalleryItems] = useState([])
   const [dataLoaded, setDataLoaded] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(null)
+  const touchStartX = useRef(0)
+  const touchEndX = useRef(0)
+
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev === 0 ? galleryItems.length - 1 : prev - 1))
+  }
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev === galleryItems.length - 1 ? 0 : prev + 1))
+  }
+
+  const handleClose = () => {
+    setActiveIndex(null)
+  }
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].screenX
+  }
+
+  const handleTouchEnd = (e) => {
+    touchEndX.current = e.changedTouches[0].screenX
+    handleSwipe()
+  }
+
+  const handleSwipe = () => {
+    const diff = touchStartX.current - touchEndX.current
+    const threshold = 50
+    if (diff > threshold) {
+      handleNext()
+    } else if (diff < -threshold) {
+      handlePrev()
+    }
+  }
+
+  // Prevent scroll when modal is open
+  useEffect(() => {
+    if (activeIndex !== null) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [activeIndex])
+
+  // Keyboard navigation controls
+  useEffect(() => {
+    if (activeIndex === null) return
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') {
+        handleNext()
+      } else if (e.key === 'ArrowLeft') {
+        handlePrev()
+      } else if (e.key === 'Escape') {
+        handleClose()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [activeIndex, galleryItems])
 
   const fallbackGalleryItems = [
     {
@@ -170,7 +237,8 @@ const Gallery = () => {
           {galleryItems.map((item, idx) => (
             <div 
               key={idx}
-              className={`gallery-item relative overflow-hidden rounded-[1.25rem] sm:rounded-[2rem] border border-white/5 bg-dark-surface/30 shadow-lg shadow-black/35 group break-inside-avoid mb-4 sm:mb-8 transition-colors duration-500 ${item.aspect} ${item.glowColor}`}
+              onClick={() => setActiveIndex(idx)}
+              className={`gallery-item cursor-pointer relative overflow-hidden rounded-[1.25rem] sm:rounded-[2rem] border border-white/5 bg-dark-surface/30 shadow-lg shadow-black/35 group break-inside-avoid mb-4 sm:mb-8 transition-colors duration-500 ${item.aspect} ${item.glowColor}`}
             >
               {/* Parallax Image container */}
               <div className="absolute inset-0 overflow-hidden w-full h-full">
@@ -198,6 +266,74 @@ const Gallery = () => {
         </div>
 
       </div>
+
+      {/* Lightbox Modal */}
+      {activeIndex !== null && galleryItems[activeIndex] && (
+        <div 
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-md transition-all duration-300 animate-fade-in"
+          onClick={handleClose}
+        >
+          {/* Close Button */}
+          <button 
+            onClick={handleClose}
+            className="absolute top-6 right-6 text-white/70 hover:text-white transition-all p-3 rounded-full bg-white/5 hover:bg-white/10 text-3xl focus:outline-none z-[60] cursor-pointer"
+            aria-label="Close Lightbox"
+          >
+            <IoCloseOutline />
+          </button>
+
+          {/* Left / Prev Button */}
+          <button 
+            onClick={(e) => {
+              e.stopPropagation()
+              handlePrev()
+            }}
+            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-all p-3 rounded-full bg-white/5 hover:bg-white/10 text-3xl focus:outline-none z-[60] cursor-pointer hidden md:flex items-center justify-center"
+            aria-label="Previous Image"
+          >
+            <IoChevronBackOutline />
+          </button>
+
+          {/* Right / Next Button */}
+          <button 
+            onClick={(e) => {
+              e.stopPropagation()
+              handleNext()
+            }}
+            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-all p-3 rounded-full bg-white/5 hover:bg-white/10 text-3xl focus:outline-none z-[60] cursor-pointer hidden md:flex items-center justify-center"
+            aria-label="Next Image"
+          >
+            <IoChevronForwardOutline />
+          </button>
+
+          {/* Modal Content */}
+          <div 
+            className="relative max-w-[90%] max-h-[75vh] md:max-h-[80vh] flex flex-col items-center justify-center select-none"
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <img 
+              src={galleryItems[activeIndex].img} 
+              alt={galleryItems[activeIndex].title} 
+              className="max-w-full max-h-[70vh] md:max-h-[75vh] object-contain rounded-lg shadow-2xl transition-all duration-300 transform scale-100" 
+            />
+            
+            {/* Caption */}
+            <div className="mt-6 text-center max-w-xl px-4">
+              <span className="text-[10px] font-bold text-neon-cyan uppercase tracking-widest block mb-1">
+                {galleryItems[activeIndex].tag}
+              </span>
+              <h3 className="font-display text-lg md:text-xl font-black text-white uppercase tracking-wide">
+                {galleryItems[activeIndex].title}
+              </h3>
+              <p className="text-gray-500 text-xs font-mono mt-2">
+                {activeIndex + 1} / {galleryItems.length}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
