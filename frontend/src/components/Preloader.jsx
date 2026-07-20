@@ -72,11 +72,11 @@ const Preloader = ({ onComplete }) => {
       <div ref={contentRef} className="flex flex-col items-center max-w-sm w-full px-8 relative z-10">
         
         {/* Brand Logo & Name */}
-        <div className="flex items-center gap-3 mb-10">
+        <div className="flex flex-col items-center gap-3 mb-8 text-center">
           <img 
             src="/favicon.png" 
             alt="Muscle Craft Logo" 
-            className="w-12 h-12 object-contain animate-pulse"
+            className="w-36 h-36 object-contain animate-pulse mb-2"
           />
           <span className="font-display text-3xl font-extrabold tracking-wider text-white">
             Muscle Craft<span className="text-neon-lime">.</span>
