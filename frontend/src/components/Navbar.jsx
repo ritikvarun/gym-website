@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { FiMenu, FiX } from 'react-icons/fi'
-import { RiFlashlightLine } from 'react-icons/ri'
 import Magnetic from './Magnetic'
 
 const Navbar = () => {
@@ -41,9 +40,11 @@ const Navbar = () => {
         {/* Logo */}
         <Magnetic>
           <a href="#" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-lg bg-neon-lime flex items-center justify-center shadow-lg shadow-neon-lime/20 group-hover:scale-105 transition-transform duration-300">
-              <RiFlashlightLine className="text-black text-xl font-bold" />
-            </div>
+            <img 
+              src="/favicon.png" 
+              alt="Muscle Craft Logo" 
+              className="w-10 h-10 object-contain group-hover:scale-105 transition-transform duration-300"
+            />
             <span className="font-display text-2xl font-extrabold tracking-wider text-white">
               Muscle Craft<span className="text-neon-lime">.</span>
             </span>

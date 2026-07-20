@@ -55,6 +55,12 @@ function Settings() {
     const [aboutPhotoPreview, setAboutPhotoPreview] = useState("")
     const [photoUploading, setPhotoUploading] = useState(false)
 
+    // Hero Background Photo
+    const [heroBgPhoto, setHeroBgPhoto] = useState("")
+    const [heroBgPhotoFile, setHeroBgPhotoFile] = useState(null)
+    const [heroBgPhotoPreview, setHeroBgPhotoPreview] = useState("")
+    const [heroBgUploading, setHeroBgUploading] = useState(false)
+
     const fetchSettings = async () => {
         setLoading(true)
         try {
@@ -87,6 +93,8 @@ function Settings() {
             setElitePeriod(data.elitePeriod || "for 1 year")
             setAboutPhoto(data.aboutPhoto || "")
             setAboutPhotoPreview(data.aboutPhoto || "")
+            setHeroBgPhoto(data.heroBgPhoto || "")
+            setHeroBgPhotoPreview(data.heroBgPhoto || "")
         } catch (error) {
             console.error(error)
             toast.error("Failed to load settings")
@@ -174,6 +182,37 @@ function Settings() {
             toast.error('Failed to upload about photo')
         }
         setPhotoUploading(false)
+    }
+
+    const handleHeroBgPhotoChange = (e) => {
+        const file = e.target.files[0]
+        if (!file) return
+        setHeroBgPhotoFile(file)
+        setHeroBgPhotoPreview(URL.createObjectURL(file))
+    }
+
+    const handleHeroBgPhotoUpload = async () => {
+        if (!heroBgPhotoFile) return toast.error('Please select a photo first')
+        setHeroBgUploading(true)
+        try {
+            const formData = new FormData()
+            formData.append('photo', heroBgPhotoFile)
+            const token = localStorage.getItem('adminToken')
+            const headers = token ? { Authorization: `Bearer ${token}` } : {}
+            const res = await axios.post(`${serverUrl}/api/settings/hero-bg-photo`, formData, {
+                headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            })
+            if (res.data.success) {
+                setHeroBgPhoto(res.data.heroBgPhoto)
+                setHeroBgPhotoFile(null)
+                toast.success('Hero background photo uploaded successfully!')
+            }
+        } catch (error) {
+            console.error(error)
+            toast.error('Failed to upload hero background photo')
+        }
+        setHeroBgUploading(false)
     }
 
     return (
@@ -559,6 +598,45 @@ function Settings() {
                                         className='w-fit px-[24px] h-[42px] rounded-full bg-gradient-to-r from-gray-900 to-black text-white font-bold text-[13px] flex items-center justify-center gap-[8px] hover:shadow-lg hover:shadow-gray-200 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed'
                                     >
                                         {photoUploading ? <Loading /> : <><FiSave /> Upload Photo</>}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Hero Background Photo — Separate Upload Card */}
+                        <div className='mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm p-[32px] max-w-[820px] mb-12'>
+                            <h3 className='text-[15px] font-bold text-gray-800 border-b border-gray-100 pb-2 mb-4'>8. Hero Background Image</h3>
+                            <p className='text-[12px] text-gray-400 mb-5'>Homepage par text ke piche jo background image dikhti hai, use yahan se change karein.</p>
+                            <div className='flex flex-col md:flex-row gap-6 items-start'>
+                                {/* Preview */}
+                                <div className='w-full md:w-[320px] h-[180px] rounded-xl overflow-hidden border border-gray-200 bg-gray-100 flex-shrink-0'>
+                                    {heroBgPhotoPreview ? (
+                                        <img src={heroBgPhotoPreview} alt='Hero Background Preview' className='w-full h-full object-cover' />
+                                    ) : (
+                                        <div className='w-full h-full flex items-center justify-center text-gray-400 text-[12px] font-medium'>No Image (Default Video is shown)</div>
+                                    )}
+                                </div>
+                                {/* Upload Controls */}
+                                <div className='flex flex-col gap-4 flex-1'>
+                                    <div>
+                                        <label className={labelClass}>Choose New Background Image</label>
+                                        <input 
+                                            type='file' 
+                                            accept='image/*'
+                                            onChange={handleHeroBgPhotoChange}
+                                            className='w-full text-[13px] text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[12px] file:font-semibold file:bg-gray-900 file:text-white hover:file:bg-gray-700 cursor-pointer'
+                                        />
+                                    </div>
+                                    {heroBgPhotoFile && (
+                                        <p className='text-[11px] text-gray-400'>Selected: {heroBgPhotoFile.name} ({(heroBgPhotoFile.size / 1024 / 1024).toFixed(2)} MB)</p>
+                                    )}
+                                    <button
+                                        type='button'
+                                        onClick={handleHeroBgPhotoUpload}
+                                        disabled={heroBgUploading || !heroBgPhotoFile}
+                                        className='w-fit px-[24px] h-[42px] rounded-full bg-gradient-to-r from-gray-900 to-black text-white font-bold text-[13px] flex items-center justify-center gap-[8px] hover:shadow-lg hover:shadow-gray-200 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed'
+                                    >
+                                        {heroBgUploading ? <Loading /> : <><FiSave /> Upload Background Image</>}
                                     </button>
                                 </div>
                             </div>

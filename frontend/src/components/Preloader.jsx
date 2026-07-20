@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { gsap } from 'gsap'
-import { RiFlashlightLine } from 'react-icons/ri'
 
 const Preloader = ({ onComplete }) => {
   const [progress, setProgress] = useState(0)
@@ -74,9 +73,11 @@ const Preloader = ({ onComplete }) => {
         
         {/* Brand Logo & Name */}
         <div className="flex items-center gap-3 mb-10">
-          <div className="w-11 h-11 rounded-xl bg-neon-lime flex items-center justify-center shadow-lg shadow-neon-lime/20 animate-pulse">
-            <RiFlashlightLine className="text-black text-2xl font-bold" />
-          </div>
+          <img 
+            src="/favicon.png" 
+            alt="Muscle Craft Logo" 
+            className="w-12 h-12 object-contain animate-pulse"
+          />
           <span className="font-display text-3xl font-extrabold tracking-wider text-white">
             Muscle Craft<span className="text-neon-lime">.</span>
           </span>

@@ -28,7 +28,8 @@ const Hero = () => {
     heroSubheadline: "Expert trainers, cutting-edge equipment, personalized workout plans, and a motivating community designed to help you achieve your fitness goals faster.",
     membersActive: "15k+",
     eliteCoaches: "25+",
-    successRate: "99.8%"
+    successRate: "99.8%",
+    heroBgPhoto: ""
   })
   const [dataLoaded, setDataLoaded] = useState(false)
 
@@ -204,21 +205,30 @@ const Hero = () => {
         <div className="absolute inset-0 bg-radial-gradient from-transparent to-dark-bg/90 z-10" />
         <div className="absolute inset-0 grid-pattern opacity-40 z-10" />
         
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-          poster={gymFallback}
-        >
-          <source 
-            src="https://assets.mixkit.co/videos/preview/mixkit-man-training-in-the-gym-with-dumbbells-41865-large.mp4" 
-            type="video/mp4" 
+        {settings.heroBgPhoto ? (
+          <img 
+            ref={videoRef}
+            src={settings.heroBgPhoto} 
+            alt="Gym Hero Background" 
+            className="w-full h-full object-cover" 
           />
-          Your browser does not support the video tag.
-        </video>
+        ) : (
+          <video
+            ref={videoRef}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+            poster={gymFallback}
+          >
+            <source 
+              src="https://assets.mixkit.co/videos/preview/mixkit-man-training-in-the-gym-with-dumbbells-41865-large.mp4" 
+              type="video/mp4" 
+            />
+            Your browser does not support the video tag.
+          </video>
+        )}
       </div>
 
       {/* Main Content Area */}

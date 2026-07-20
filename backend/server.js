@@ -100,6 +100,7 @@ const defaultDb = {
     elitePrice: "12,000",
     elitePeriod: "for 1 year",
     aboutPhoto: "",
+    heroBgPhoto: "",
     estYear: "2014",
     estTagline: "12 Years of Athletic Innovation",
     upiId: "",
@@ -155,6 +156,7 @@ const settingsSchema = new mongoose.Schema({
   elitePrice: { type: String, default: "12,000" },
   elitePeriod: { type: String, default: "for 1 year" },
   aboutPhoto: { type: String, default: "" },
+  heroBgPhoto: { type: String, default: "" },
   estYear: { type: String, default: "2014" },
   estTagline: { type: String, default: "12 Years of Athletic Innovation" },
   upiId: { type: String, default: "" },
@@ -422,6 +424,33 @@ app.post('/api/settings/about-photo', authMiddleware, upload.single('photo'), as
       db.settings = { ...db.settings, aboutPhoto: photoUrl };
       writeLocalDb(db);
       return res.json({ success: true, aboutPhoto: photoUrl });
+    }
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Upload Hero Background Photo
+app.post('/api/settings/hero-bg-photo', authMiddleware, upload.single('photo'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded' });
+  }
+  try {
+    const photoUrl = await uploadImage(req.file);
+    if (isMongoConnected) {
+      let settings = await SettingsModel.findOne();
+      if (!settings) {
+        settings = new SettingsModel({ heroBgPhoto: photoUrl });
+      } else {
+        settings.heroBgPhoto = photoUrl;
+      }
+      await settings.save();
+      return res.json({ success: true, heroBgPhoto: photoUrl });
+    } else {
+      const db = readLocalDb();
+      db.settings = { ...db.settings, heroBgPhoto: photoUrl };
+      writeLocalDb(db);
+      return res.json({ success: true, heroBgPhoto: photoUrl });
     }
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message });
