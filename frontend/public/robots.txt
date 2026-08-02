@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap Location
-Sitemap: https://musclecraft.com/sitemap.xml
+Sitemap: https://www.musclecraftfitnessgym.in/sitemap.xml
