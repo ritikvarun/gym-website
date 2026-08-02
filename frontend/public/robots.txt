@@ -1,0 +1,6 @@
+# User-agent rules for search engine crawlers
+User-agent: *
+Allow: /
+
+# Sitemap Location
+Sitemap: https://musclecraft.com/sitemap.xml
