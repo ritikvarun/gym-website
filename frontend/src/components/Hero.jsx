@@ -317,7 +317,7 @@ const Hero = () => {
             <StatsCard 
               icon={FiUsers} 
               number={settings.membersActive} 
-              label="Members Transformed" 
+              label="Members" 
               highlightClass="text-neon-lime" 
             />
           </div>

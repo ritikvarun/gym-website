@@ -53,7 +53,7 @@ const Navbar = () => {
               </a>
               <a 
                 href="tel:8439919640" 
-                className="mt-1 text-[11px] sm:text-xs font-bold text-neon-lime hover:text-white transition-colors duration-300 flex items-center gap-1 tracking-wide"
+                className="md:hidden mt-1 text-[11px] font-bold text-neon-lime hover:text-white transition-colors duration-300 flex items-center gap-1 tracking-wide"
               >
                 <FiPhone className="w-3 h-3 text-neon-lime shrink-0" />
                 <span>8439919640</span>

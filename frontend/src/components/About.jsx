@@ -241,7 +241,7 @@ const About = () => {
               <span className="stat-counter text-glow-cyan text-neon-cyan" data-target={settings.aboutMembers}>0</span>
               <span className="text-neon-cyan">+</span>
             </span>
-            <span className="text-xs font-bold tracking-widest text-gray-400 uppercase mt-3">Members Transformed</span>
+            <span className="text-xs font-bold tracking-widest text-gray-400 uppercase mt-3">Members</span>
           </div>
 
           {/* Stat 3 */}
