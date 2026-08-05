@@ -3,7 +3,6 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Gallery from './components/Gallery'
 import About from './components/About'
-import WhyChooseUs from './components/WhyChooseUs'
 import Equipments from './components/Equipments'
 import Trainers from './components/Trainers'
 import Programs from './components/Programs'
@@ -35,9 +34,6 @@ const App = () => {
         
         {/* About Us Section */}
         <About />
-        
-        {/* Why Choose Us Section */}
-        <WhyChooseUs />
         
         {/* Equipments Showcase Section */}
         <Equipments />
