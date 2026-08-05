@@ -104,6 +104,8 @@ const CTA = () => {
       let selected = '';
       if (hash === '#join-trial') {
         selected = 'trial_pass';
+      } else if (hash === '#join-monthly') {
+        selected = 'monthly';
       } else if (hash === '#join-basic') {
         selected = 'basic';
       } else if (hash === '#join-standard') {
@@ -161,6 +163,7 @@ const CTA = () => {
   // Map option keys to user-friendly titles
   const planTitles = {
     trial_pass: '1-Day Trial Pass (Adjustable — ₹200)',
+    monthly: '1 Month Membership (for 1 month — ₹3,000)',
     basic: `Basic Access (${settings.basicPeriod} — ₹${settings.basicPrice})`,
     standard: `Standard Tier (${settings.standardPeriod} — ₹${settings.standardPrice})`,
     elite: `Elite Premium (${settings.elitePeriod} — ₹${settings.elitePrice})`
@@ -169,6 +172,7 @@ const CTA = () => {
   const getCleanPrice = (planKey) => {
     let priceStr = '';
     if (planKey === 'trial_pass') priceStr = '200';
+    else if (planKey === 'monthly') priceStr = '3000';
     else if (planKey === 'basic') priceStr = settings.basicPrice;
     else if (planKey === 'standard') priceStr = settings.standardPrice;
     else if (planKey === 'elite') priceStr = settings.elitePrice;
@@ -482,7 +486,7 @@ const CTA = () => {
                         className="w-full bg-white/5 border border-white/10 focus:border-neon-lime/40 rounded-xl pl-11 pr-10 py-3.5 text-xs text-white appearance-none focus:outline-none focus:ring-1 focus:ring-neon-lime/20 transition-all font-sans cursor-pointer"
                       >
                         <option value="trial_pass" className="bg-[#0c0c0e] text-white">1-Day Trial Pass (Adjustable — ₹200)</option>
-                        <option value="basic" className="bg-[#0c0c0e] text-white">Basic Access ({settings.basicPeriod} — ₹{settings.basicPrice})</option>
+                        <option value="monthly" className="bg-[#0c0c0e] text-white">1 Month Membership (for 1 month — ₹3,000)</option>
                         <option value="standard" className="bg-[#0c0c0e] text-white">Standard Tier ({settings.standardPeriod} — ₹{settings.standardPrice})</option>
                         <option value="elite" className="bg-[#0c0c0e] text-white">Elite Premium ({settings.elitePeriod} — ₹{settings.elitePrice})</option>
                       </select>
