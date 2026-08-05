@@ -98,3 +98,45 @@ body {
 a, button, [role="button"], input, textarea, select, label, .cursor-pointer {
   cursor: none !important;
 }
+
+/* Light Mode Lightbox Modal */
+html.light .fixed.bg-black\/90,
+html.light .fixed.bg-black\/95 {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  backdrop-filter: blur(24px) !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #08080a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f1f27;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ccff00;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #08080a;
+  overflow-x: hidden;
+  cursor: none;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+body {
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  cursor: none;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Hide default cursor on all interactive elements too */
+a, button, [role="button"], input, textarea, select, label, .cursor-pointer {
+  cursor: none !important;
+}

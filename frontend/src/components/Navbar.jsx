@@ -63,8 +63,8 @@ const Navbar = () => {
         </Magnetic>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
-          {['Home', 'Gallery', 'About', 'Services', 'Trainers', 'Programs', 'Pricing'].map((link) => (
+        <div className="hidden md:flex items-center gap-7">
+          {['Home', 'Gallery', 'About', 'Equipments', 'Trainers', 'Pricing'].map((link) => (
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
@@ -85,6 +85,7 @@ const Navbar = () => {
             <FiPhone className="text-neon-lime w-3.5 h-3.5" />
             <span>8439919640</span>
           </a>
+
           <Magnetic>
             <a
               href="#join"
@@ -114,7 +115,7 @@ const Navbar = () => {
         }`}
       >
         <div className="flex flex-col gap-6">
-          {['Home', 'Gallery', 'About', 'Services', 'Trainers', 'Programs', 'Pricing'].map((link, idx) => (
+          {['Home', 'Gallery', 'About', 'Equipments', 'Trainers', 'Pricing'].map((link, idx) => (
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
