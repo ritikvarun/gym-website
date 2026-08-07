@@ -5,7 +5,6 @@ import Gallery from './components/Gallery'
 import About from './components/About'
 import Equipments from './components/Equipments'
 import Trainers from './components/Trainers'
-import Programs from './components/Programs'
 import Pricing from './components/Pricing'
 import Transformations from './components/Transformations'
 import CTA from './components/CTA'
@@ -40,9 +39,6 @@ const App = () => {
         
         {/* Trainers Section */}
         <Trainers />
-        
-        {/* Programs / Showcase Section */}
-        <Programs />
         
         {/* Pricing Section */}
         <Pricing />

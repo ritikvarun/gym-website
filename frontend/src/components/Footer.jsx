@@ -89,7 +89,6 @@ const Footer = () => {
             <ul className="flex flex-col gap-3">
               {[
                 { label: 'Home', link: '#home' },
-                { label: 'Programs', link: '#programs' },
                 { label: 'Services', link: '#services' },
                 { label: 'Trainers', link: '#trainers' },
                 { label: 'Pricing', link: '#pricing' },

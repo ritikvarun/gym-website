@@ -10,9 +10,16 @@ import {
 } from 'react-icons/io5'
 import { FiShield, FiCpu, FiLayers } from 'react-icons/fi'
 
-// Local generated assets
+// Local generated & captured assets
 import powerRackImg from '../assets/equipment_power_rack.png'
-import dumbbellsImg from '../assets/equipment_dumbbells.png'
+import dumbbellsImg from '../assets/equipment_dumbbells_real.jpg'
+import legPressImg from '../assets/equipment_leg_press.jpg'
+import spinBikesImg from '../assets/equipment_spin_bikes.jpg'
+import punchingBagImg from '../assets/equipment_punching_bag.jpg'
+import functionalPlyoImg from '../assets/equipment_functional_plyo.jpg'
+import treadmillsImg from '../assets/equipment_treadmills.jpg'
+import smithRackImg from '../assets/equipment_smith_rack.jpg'
+import functionalV2Img from '../assets/equipment_functional_v2.jpg'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -29,60 +36,133 @@ const categories = [
 const equipmentItems = [
   {
     id: 1,
-    name: 'Rogue Monster Olympic Power Rack',
-    category: 'racks-weights',
-    categoryName: 'Heavy Racks & Free Weights',
-    badge: 'HEAVY DUTY STRENGTH',
-    img: powerRackImg,
-    fallbackUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=1200&auto=format&fit=crop',
-    specs: ['3x3" 11-Gauge Steel', '1000 lbs Max Load', 'Laser-Cut Markers'],
-    targetMuscle: 'Full Body / Compound Lifts',
-    description: 'Precision-engineered commercial power rack engineered for elite squatting, benching, overhead pressing, and pull-up variations with maximum safety.',
-    highlights: [
-      'Heavy-duty 1" hardware with magnetic lock pins',
-      'Dual multi-grip pull-up crossmembers & dip handles',
-      'Commercial-grade band pegs & spotter arm paddings',
-      'High-impact powder-coated anti-scratch finish'
-    ]
-  },
-  {
-    id: 2,
-    name: 'CPU Urethane Dumbbell Set (5kg - 60kg)',
+    name: 'CPU Urethane Dumbbell Set & Rack',
     category: 'racks-weights',
     categoryName: 'Heavy Racks & Free Weights',
     badge: 'PRO FREE WEIGHTS',
     img: dumbbellsImg,
-    fallbackUrl: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?q=80&w=1200&auto=format&fit=crop',
-    specs: ['Solid Steel Core', 'Odorless Urethane', 'Anti-Roll Design'],
-    targetMuscle: 'Targeted Isolation Lifts',
-    description: 'Ultra-durable single-piece CPU urethane dumbbells offering perfect weight distribution, knurled anti-slip chrome handles, and heavy storage racks.',
+    fallbackUrl: dumbbellsImg,
+    specs: ['Solid Steel Core', 'CPU Urethane Dumbbells', 'Multi-Tier Heavy Storage Rack'],
+    targetMuscle: 'Targeted Isolation & Free Weight Lifts',
+    description: 'Commercial-grade multi-tier dumbbell rack equipped with solid steel CPU urethane dumbbells, knurled anti-slip handles, and full mirror wall integration.',
     highlights: [
-      'High-grade CPU compound resistant to cracking or fading',
-      'Precision welded solid steel head to handle joint',
-      'Ergonomic medium-knurl chrome plated handles',
-      'Full weight set range from 5kg up to 60kg in 2.5kg steps'
+      'High-grade CPU urethane dumbbells resistant to cracking or fading',
+      'Precision welded solid steel head-to-handle construction',
+      'Ergonomic knurled anti-slip handles',
+      'Heavy-duty multi-tier rack with mirror reflection setup'
+    ]
+  },
+  {
+    id: 2,
+    name: 'Heavy Smith Machine & Bumper Plates',
+    category: 'racks-weights',
+    categoryName: 'Heavy Racks & Free Weights',
+    badge: 'OLYMPIC BUMPER PLATES',
+    img: smithRackImg,
+    fallbackUrl: smithRackImg,
+    specs: ['Heavy Smith Guide System', 'Color Bumper Plates', 'Hanuman Mural Zone'],
+    targetMuscle: 'Full Body / Heavy Compound Lifts',
+    description: 'Professional heavy-duty Smith rack station loaded with color bumper plates, dual safety hooks, knurled Olympic barbells, and custom mural backdrop.',
+    highlights: [
+      'Precision linear bearing guided Smith bar motion',
+      'Commercial-grade color-coded bumper plates',
+      'Multi-position safety hook increments for solo squatting & pressing',
+      'Heavy steel base frame engineered for maximum load stability'
     ]
   },
   {
     id: 3,
-    name: 'Hammer Iso-Lateral Chest & Shoulder Press',
-    category: 'iso-machines',
-    categoryName: 'Iso-Lateral Machines',
-    badge: 'BIOMECHANICAL ARC',
-    img: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200&auto=format&fit=crop',
-    specs: ['Independent Arm Motion', 'Plate Loaded', 'Dual Grip Positions'],
-    targetMuscle: 'Pectorals, Anterior Deltoids, Triceps',
-    description: 'Ground-breaking ground-based plate-loaded machine designed with converging and diverging motion axes that mirror natural human body movement.',
+    name: 'Commercial Endurance Treadmills',
+    category: 'cardio',
+    categoryName: 'Cardio & HIIT',
+    badge: 'HIGH END TREADMILLS',
+    img: treadmillsImg,
+    fallbackUrl: treadmillsImg,
+    specs: ['High-Torque Motor', 'Telemetry Console', 'Shock-Absorbing Deck'],
+    targetMuscle: 'Cardiovascular Endurance & Fat Loss',
+    description: 'Line of commercial endurance treadmills featuring high-torque motors, digital console telemetry, dynamic inclination control, and orthopedic running belts.',
     highlights: [
-      'Independent arm movement for balanced muscular development',
-      'Dual handle placements for flat and incline angles',
-      'Heavy-duty structural tubing with industrial bearings',
-      'Contoured high-density foam seating with gas-assisted adjust'
+      'Powerful quiet commercial motor built for continuous heavy operation',
+      'Multi-screen telemetry console tracking speed, distance & incline',
+      'Shock-absorbing cushioned deck reducing joint impact',
+      'Quick-speed & elevation hotkeys for high-intensity interval sprints'
     ]
   },
   {
     id: 4,
-    name: 'Dual Adjustable Swivel Cable Tower',
+    name: '45° Incline Leg Press & Hack Station',
+    category: 'iso-machines',
+    categoryName: 'Iso-Lateral Machines',
+    badge: 'LEGS & POWER',
+    img: legPressImg,
+    fallbackUrl: legPressImg,
+    specs: ['1200kg Max Capacity', 'Linear Roller Bearings', 'Quad & Calf Focus'],
+    targetMuscle: 'Quadriceps, Hamstrings, Glutes & Calves',
+    description: 'Massive plate-loaded 45-degree incline leg press & hack squat machine with linear guide rails, safety lockouts, and calf raise plate.',
+    highlights: [
+      'Extra-wide diamond plate foot platform for multiple stance variations',
+      'Triple-position safety lockout levers for solo heavy training',
+      'Adjustable padded backrest angle for optimal spinal positioning',
+      'Heavy dual weight horns for high-capacity plate loading'
+    ]
+  },
+  {
+    id: 5,
+    name: 'Heavy Boxing Punching Bag',
+    category: 'cables-functional',
+    categoryName: 'Cables & Turf',
+    badge: 'COMBAT CONDITIONING',
+    img: punchingBagImg,
+    fallbackUrl: punchingBagImg,
+    specs: ['Heavy Synthetic Leather', 'Steel Chain Suspended', 'High-Density Foam Core'],
+    targetMuscle: 'Full Body Endurance & Combat Conditioning',
+    description: 'Overhead steel rig suspended heavy punching bag designed for martial arts, boxing drills, explosive power output, and stamina building.',
+    highlights: [
+      'Thick multi-layer synthetic leather construction',
+      '360-degree heavy-duty steel swivel chain ceiling mount',
+      'Shock-absorbing high-density inner core padding',
+      'Ideal for heavy kickboxing, punching combinations, and HIIT intervals'
+    ]
+  },
+  {
+    id: 6,
+    name: 'Indoor Studio Cycling Spin Bikes',
+    category: 'cardio',
+    categoryName: 'Cardio & HIIT',
+    badge: 'CARDIO ENDURANCE',
+    img: spinBikesImg,
+    fallbackUrl: spinBikesImg,
+    specs: ['Precision Flywheel', 'Magnetic Resistance', 'Adjustable Saddle & Handlebars'],
+    targetMuscle: 'Cardiovascular & Lower Body Endurance',
+    description: 'Elite indoor studio cycle spin bikes featuring smooth magnetic resistance, dual SPD pedals, and micro-adjustments under custom hex lighting.',
+    highlights: [
+      'Ultra-quiet magnetic resistance system with emergency stop brake',
+      'Multi-grip sweat-resistant handlebars with micro-adjustment controls',
+      'Dual-function SPD clips & caged toe pedals',
+      'Heavy-duty commercial steel frame built for high-intensity studio rides'
+    ]
+  },
+  {
+    id: 7,
+    name: 'Athletic Stepper & Agility Turf Zone',
+    category: 'cables-functional',
+    categoryName: 'Cables & Turf',
+    badge: 'ATHLETIC CONDITIONING',
+    img: functionalV2Img,
+    fallbackUrl: functionalV2Img,
+    specs: ['Aerobic Step Board', 'Soft Jump Box', 'Swiss Stability Ball'],
+    targetMuscle: 'Footwork Speed, Balance & Core Stability',
+    description: 'Specialized athletic conditioning bay with non-slip aerobic step platforms, heavy soft plyo blocks, exercise balls, and workout mat storage.',
+    highlights: [
+      'Adjustable height aerobic step board for cardio stepper workouts',
+      'Heavy-duty commercial gear storage rack with dumbbells & foam rollers',
+      'High-durability wood-grain rubber flooring optimized for impact reduction',
+      'Ideal for personal training sessions & high-tempo metabolic conditioning'
+    ]
+  },
+  {
+    id: 8,
+    name: 'Dual Swivel Cable Crossover Tower',
     category: 'cables-functional',
     categoryName: 'Cables & Turf',
     badge: 'SMOOTH RESISTANCE',
@@ -98,59 +178,8 @@ const equipmentItems = [
     ]
   },
   {
-    id: 5,
-    name: 'Heavy-Duty 45° Incline Leg Press Beast',
-    category: 'iso-machines',
-    categoryName: 'Iso-Lateral Machines',
-    badge: 'LEGS & POWER',
-    img: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=1200&auto=format&fit=crop',
-    specs: ['1200kg Max Capacity', 'Linear Bearings', 'Quad Roller System'],
-    targetMuscle: 'Quadriceps, Hamstrings & Glutes',
-    description: 'Massive plate-loaded 45-degree leg press engineered with ultra-smooth linear bearings for maximum leg hyper-trophy with zero spine stress.',
-    highlights: [
-      'Extra-wide oversized diamond plate foot platform',
-      'Triple-position safety lock-out levers for solo training',
-      'Adjustable backrest angle for optimal hip positioning',
-      'Dual weight horn pins for heavy plate loading capacity'
-    ]
-  },
-  {
-    id: 6,
-    name: 'Assault AirBike Pro HIIT Endurance',
-    category: 'cardio',
-    categoryName: 'Cardio & HIIT',
-    badge: 'INFINITE RESISTANCE',
-    img: 'https://images.unsplash.com/photo-1576678927484-cc909957088c?q=80&w=1200&auto=format&fit=crop',
-    specs: ['27" Steel Fan Blade', 'HIIT Console Modes', 'Dual-Stage Chain'],
-    targetMuscle: 'Cardiovascular & Full Body Conditioning',
-    description: 'The ultimate wind-resistance bike designed for high-intensity interval training, conditioning sprints, and maximum calorie burn output.',
-    highlights: [
-      'Uncompromising air-resistance system ramps up as you push harder',
-      'Integrated LCD telemetry console tracking Watts, RPM, Heart Rate',
-      'Heavy-duty steel frame with reinforced foot pegs for upper body isolation',
-      'Anatomically contoured sweat-resistant seat cushion'
-    ]
-  },
-  {
-    id: 7,
-    name: 'Synergy Turf Rig & Heavy Sled Track',
-    category: 'cables-functional',
-    categoryName: 'Cables & Turf',
-    badge: 'CROSS-TRAINING',
-    img: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?q=80&w=1200&auto=format&fit=crop',
-    specs: ['High-Density Turf', 'Battle Rope Pegs', 'Prowler Sled Station'],
-    targetMuscle: 'Explosive Power & Stamina',
-    description: 'Dedicated functional training turf zone equipped with battle ropes, plyometric boxes, wall-ball targets, and heavy push-pull prowler sleds.',
-    highlights: [
-      'Shock-absorbent high-density synthetic grass turf sprint track',
-      'Multi-station monkey bar ladder & gymnastics rings',
-      'Custom heavy-gauge prowler sleds with removable posts',
-      'Complete kettlebell, wall ball & slam ball storage bays'
-    ]
-  },
-  {
-    id: 8,
-    name: 'Hyperice & Cryo Active Recovery Station',
+    id: 9,
+    name: 'Percussion & Cryo Recovery Station',
     category: 'recovery',
     categoryName: 'Recovery Tech',
     badge: 'ADVANCED RECOVERY',
@@ -163,6 +192,24 @@ const equipmentItems = [
       'QuietGlide percussion tools for deep muscle knot release',
       'Ergonomic zero-gravity recovery loungers with ambient audio',
       'Accelerates muscular repair & reduces delayed onset soreness (DOMS)'
+    ]
+  },
+  {
+    id: 10,
+    name: 'Rogue Monster Olympic Power Rack',
+    category: 'racks-weights',
+    categoryName: 'Heavy Racks & Free Weights',
+    badge: 'HEAVY DUTY STRENGTH',
+    img: powerRackImg,
+    fallbackUrl: powerRackImg,
+    specs: ['3x3" 11-Gauge Steel', '1000 lbs Max Load', 'Laser-Cut Markers'],
+    targetMuscle: 'Full Body / Compound Lifts',
+    description: 'Precision-engineered commercial power rack engineered for elite squatting, benching, overhead pressing, and pull-up variations with maximum safety.',
+    highlights: [
+      'Heavy-duty 1" hardware with magnetic lock pins',
+      'Dual multi-grip pull-up crossmembers & dip handles',
+      'Commercial-grade band pegs & spotter arm paddings',
+      'High-impact powder-coated anti-scratch finish'
     ]
   }
 ]
