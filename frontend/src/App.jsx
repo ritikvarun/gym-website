@@ -7,10 +7,12 @@ import Equipments from './components/Equipments'
 import Trainers from './components/Trainers'
 import Pricing from './components/Pricing'
 import Transformations from './components/Transformations'
+import PromotionalPoster from './components/PromotionalPoster'
 import CTA from './components/CTA'
 import Footer from './components/Footer'
 import Preloader from './components/Preloader'
 import CustomCursor from './components/CustomCursor'
+import WhatsAppButton from './components/WhatsAppButton'
 
 const App = () => {
   const [loading, setLoading] = React.useState(true)
@@ -45,12 +47,18 @@ const App = () => {
         
         {/* Transformations Section */}
         <Transformations />
+
+        {/* Promotional Diet Plan Poster Section */}
+        <PromotionalPoster />
         
         {/* Call to Action Section */}
         <CTA />
         
         {/* Footer Section */}
         <Footer />
+
+        {/* Floating WhatsApp Action Button */}
+        <WhatsAppButton />
       </div>
     </>
   )
