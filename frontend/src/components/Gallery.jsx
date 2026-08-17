@@ -8,7 +8,15 @@ import gallery4 from '../assets/gallery_4.webp'
 import gallery5 from '../assets/gallery_5.webp'
 import gallery6 from '../assets/gallery_6.webp'
 import { API_URL } from '../config'
-import { IoCloseOutline, IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5'
+import { 
+  IoCloseOutline, 
+  IoChevronBackOutline, 
+  IoChevronForwardOutline, 
+  IoGridOutline, 
+  IoAlbumsOutline,
+  IoExpandOutline
+} from 'react-icons/io5'
+import { FiMaximize2 } from 'react-icons/fi'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -18,71 +26,10 @@ const Gallery = () => {
   const [galleryItems, setGalleryItems] = useState([])
   const [dataLoaded, setDataLoaded] = useState(false)
   const [activeIndex, setActiveIndex] = useState(null)
+  const [mobileViewMode, setMobileViewMode] = useState('grid') // 'grid' or 'feed'
+  
   const touchStartX = useRef(0)
   const touchEndX = useRef(0)
-
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev === 0 ? galleryItems.length - 1 : prev - 1))
-  }
-
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev === galleryItems.length - 1 ? 0 : prev + 1))
-  }
-
-  const handleClose = () => {
-    setActiveIndex(null)
-  }
-
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.changedTouches[0].screenX
-  }
-
-  const handleTouchEnd = (e) => {
-    touchEndX.current = e.changedTouches[0].screenX
-    handleSwipe()
-  }
-
-  const handleSwipe = () => {
-    const diff = touchStartX.current - touchEndX.current
-    const threshold = 50
-    if (diff > threshold) {
-      handleNext()
-    } else if (diff < -threshold) {
-      handlePrev()
-    }
-  }
-
-  // Prevent scroll when modal is open
-  useEffect(() => {
-    if (activeIndex !== null) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [activeIndex])
-
-  // Keyboard navigation controls
-  useEffect(() => {
-    if (activeIndex === null) return
-
-    const handleKeyDown = (e) => {
-      if (e.key === 'ArrowRight') {
-        handleNext()
-      } else if (e.key === 'ArrowLeft') {
-        handlePrev()
-      } else if (e.key === 'Escape') {
-        handleClose()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [activeIndex, galleryItems])
 
   const fallbackGalleryItems = [
     {
@@ -94,28 +41,28 @@ const Gallery = () => {
     },
     {
       img: gallery2,
-      title: 'Peak Output',
+      title: 'Peak Output Session',
       tag: 'Workout Session',
       aspect: 'aspect-square',
       glowColor: 'group-hover:border-neon-cyan/30'
     },
     {
       img: gallery3,
-      title: 'Precision Gears',
+      title: 'Precision Heavy Gears',
       tag: 'Strength Equipment',
       aspect: 'aspect-[4/3]',
       glowColor: 'group-hover:border-neon-pink/30'
     },
     {
       img: gallery4,
-      title: 'Master Coaching',
+      title: 'Master Coaching Floor',
       tag: 'Trainer Session',
       aspect: 'aspect-[3/4]',
       glowColor: 'group-hover:border-neon-lime/30'
     },
     {
       img: gallery5,
-      title: 'Apex Focus',
+      title: 'Apex Athlete Focus',
       tag: 'Club Member',
       aspect: 'aspect-[4/3]',
       glowColor: 'group-hover:border-neon-cyan/30'
@@ -147,36 +94,98 @@ const Gallery = () => {
       })
   }, [])
 
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev === 0 ? galleryItems.length - 1 : prev - 1))
+  }
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev === galleryItems.length - 1 ? 0 : prev + 1))
+  }
+
+  const handleClose = () => {
+    setActiveIndex(null)
+  }
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].screenX
+  }
+
+  const handleTouchEnd = (e) => {
+    touchEndX.current = e.changedTouches[0].screenX
+    handleSwipe()
+  }
+
+  const handleSwipe = () => {
+    const diff = touchStartX.current - touchEndX.current
+    const threshold = 40
+    if (diff > threshold) {
+      handleNext()
+    } else if (diff < -threshold) {
+      handlePrev()
+    }
+  }
+
+  // Prevent background scroll when modal is open
+  useEffect(() => {
+    if (activeIndex !== null) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [activeIndex])
+
+  // Keyboard navigation controls
+  useEffect(() => {
+    if (activeIndex === null) return
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') {
+        handleNext()
+      } else if (e.key === 'ArrowLeft') {
+        handlePrev()
+      } else if (e.key === 'Escape') {
+        handleClose()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [activeIndex, galleryItems])
+
   useEffect(() => {
     if (!dataLoaded) return
 
     // ScrollReveal header elements
     gsap.fromTo('.gallery-reveal-header',
-      { opacity: 0, y: 40 },
+      { opacity: 0, y: 35 },
       {
         opacity: 1,
         y: 0,
-        duration: 1.2,
+        duration: 1,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 80%',
+          start: 'top 85%',
           toggleActions: 'play none none reverse'
         }
       }
     )
 
-    // Parallax scrolling & entrance reveals for each card
-    const items = gsap.utils.toArray('.gallery-item')
+    // Parallax scrolling & entrance reveals for cards on desktop
+    const items = gsap.utils.toArray('.gallery-item-card')
     items.forEach((item) => {
-      // Staggered entrance reveals
       gsap.fromTo(item,
-        { opacity: 0, y: 60, scale: 0.96 },
+        { opacity: 0, y: 40, scale: 0.97 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 1.1,
+          duration: 0.8,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: item,
@@ -185,24 +194,6 @@ const Gallery = () => {
           }
         }
       )
-
-      // Parallax effect on the internal image
-      const img = item.querySelector('.gallery-img')
-      if (img) {
-        gsap.fromTo(img,
-          { yPercent: -10 },
-          {
-            yPercent: 10,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: item,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: true
-            }
-          }
-        )
-      }
     })
   }, [dataLoaded])
 
@@ -210,42 +201,167 @@ const Gallery = () => {
     <section 
       ref={sectionRef}
       id="gallery" 
-      className="relative w-full py-20 md:py-28 bg-[#08080a] overflow-hidden border-t border-white/5"
+      className="relative w-full py-16 sm:py-24 md:py-28 bg-[#08080a] overflow-hidden border-t border-white/5"
     >
-      {/* Background neon elements */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-neon-lime/2 rounded-full blur-[160px] pointer-events-none" />
+      {/* Background neon ambient gradients */}
+      <div className="absolute top-1/3 left-1/4 -translate-y-1/2 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-neon-lime/2 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[300px] h-[300px] bg-neon-cyan/2 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 relative z-10">
         
         {/* Section Header */}
-        <div className="gallery-reveal-header text-center max-w-2xl mx-auto mb-20">
-          <div className="text-neon-cyan text-xs font-bold uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
+        <div className="gallery-reveal-header text-center max-w-2xl mx-auto mb-8 sm:mb-14">
+          <div className="text-neon-cyan text-[11px] sm:text-xs font-bold uppercase tracking-widest mb-2.5 flex items-center justify-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-neon-cyan inline-block animate-pulse"></span>
-            Club Visuals
+            Club Visual Experience
           </div>
-          <h2 className="font-display text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-none mb-6">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight mb-4">
             Muscle Craft <span className="text-stroke-neon">ATMOSPHERE</span> <br />
             GALLERY
           </h2>
-          <p className="text-gray-400 font-sans text-sm md:text-base leading-relaxed">
-            Take a visual tour through our state-of-the-art strength training floors, customized conditioning machines, and recovery spaces.
+          <p className="text-gray-400 font-sans text-xs sm:text-sm md:text-base leading-relaxed px-2">
+            Explore our state-of-the-art strength training floors, customized conditioning machines, and luxury recovery spaces.
           </p>
         </div>
 
-        {/* Masonry Grid layout */}
-        <div className="columns-2 gap-4 sm:gap-8 lg:columns-3 w-full max-w-6xl mx-auto">
+        {/* Mobile View Switcher Header (Visible only on phone/mobile screens) */}
+        <div className="flex sm:hidden items-center justify-between gap-2 mb-5 px-1">
+          <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-neon-lime animate-pulse" />
+            {galleryItems.length} Gallery Photos
+          </span>
+
+          <div className="flex items-center bg-dark-surface/80 border border-white/10 p-1 rounded-xl shadow-lg backdrop-blur-md">
+            <button
+              onClick={() => setMobileViewMode('grid')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all ${
+                mobileViewMode === 'grid'
+                  ? 'bg-neon-lime text-black font-extrabold shadow-sm'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+              aria-label="Grid View"
+            >
+              <IoGridOutline size={14} />
+              Grid
+            </button>
+            <button
+              onClick={() => setMobileViewMode('feed')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all ${
+                mobileViewMode === 'feed'
+                  ? 'bg-neon-lime text-black font-extrabold shadow-sm'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+              aria-label="Feed View"
+            >
+              <IoAlbumsOutline size={14} />
+              Stories
+            </button>
+          </div>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* MOBILE VIEW (< 640px): 2 Modes (Grid vs Stories Feed)                     */}
+        {/* ========================================================================= */}
+        <div className="block sm:hidden">
+          {mobileViewMode === 'grid' ? (
+            /* Mode 1: Sleek 2-Column Mobile Grid */
+            <div className="grid grid-cols-2 gap-3">
+              {galleryItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setActiveIndex(idx)}
+                  className="gallery-item-card group relative rounded-2xl overflow-hidden aspect-[4/5] bg-dark-surface/40 border border-white/10 shadow-lg active:scale-[0.96] transition-all duration-200 cursor-pointer"
+                >
+                  {/* Image */}
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+
+                  {/* Subtle top-right zoom badge */}
+                  <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/80 shadow-md">
+                    <FiMaximize2 size={10} />
+                  </div>
+
+                  {/* Subtle bottom gradient & Tag on mobile */}
+                  <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-black/95 via-black/50 to-transparent flex flex-col justify-end text-left">
+                    {item.tag && (
+                      <span className="text-[8px] font-extrabold text-neon-cyan uppercase tracking-wider line-clamp-1">
+                        {item.tag}
+                      </span>
+                    )}
+                    <h3 className="font-display text-[10.5px] font-bold text-white uppercase leading-tight line-clamp-1 mt-0.5">
+                      {item.title}
+                    </h3>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* Mode 2: Full-Width Story / Feed Cards for Mobile */
+            <div className="space-y-4">
+              {galleryItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setActiveIndex(idx)}
+                  className="group relative rounded-3xl overflow-hidden aspect-[4/3] bg-dark-surface/50 border border-white/10 shadow-xl active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30" />
+
+                  {/* Top Tag & Zoom pill */}
+                  <div className="absolute top-3.5 inset-x-3.5 flex items-center justify-between">
+                    {item.tag && (
+                      <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-neon-cyan/40 text-neon-cyan text-[10px] font-extrabold uppercase tracking-wider">
+                        {item.tag}
+                      </span>
+                    )}
+                    <span className="w-8 h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white text-xs">
+                      <IoExpandOutline size={16} />
+                    </span>
+                  </div>
+
+                  {/* Bottom Title bar */}
+                  <div className="absolute bottom-4 inset-x-4 text-left">
+                    <h3 className="font-display text-lg font-black text-white uppercase tracking-wide drop-shadow-md">
+                      {item.title}
+                    </h3>
+                    <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1.5 font-sans">
+                      <span>Tap to expand full visual</span> • <span className="text-neon-lime font-bold">Photo {idx + 1} of {galleryItems.length}</span>
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* ========================================================================= */}
+        {/* DESKTOP & TABLET VIEW (>= 640px): Luxury Masonry with Hover Reveals       */}
+        {/* ========================================================================= */}
+        <div className="hidden sm:block columns-2 lg:columns-3 gap-6 sm:gap-8 w-full max-w-6xl mx-auto">
           {galleryItems.map((item, idx) => (
             <div 
               key={idx}
               onClick={() => setActiveIndex(idx)}
-              className={`gallery-item cursor-pointer relative overflow-hidden rounded-[1.25rem] sm:rounded-[2rem] border border-white/5 bg-dark-surface/30 shadow-lg shadow-black/35 group break-inside-avoid mb-4 sm:mb-8 transition-colors duration-500 ${item.aspect} ${item.glowColor}`}
+              className={`gallery-item-card cursor-pointer relative overflow-hidden rounded-[1.75rem] border border-white/5 bg-dark-surface/30 shadow-lg shadow-black/40 group break-inside-avoid mb-6 sm:mb-8 transition-colors duration-500 ${item.aspect || 'aspect-[4/3]'} ${item.glowColor || 'group-hover:border-neon-lime/30'}`}
             >
-              {/* Parallax Image container */}
+              {/* Image container */}
               <div className="absolute inset-0 overflow-hidden w-full h-full">
                 <img 
                   src={item.img} 
                   alt={item.title} 
-                  className="gallery-img absolute inset-x-0 -top-[10%] w-full h-[120%] object-cover object-center scale-110 transition-transform duration-700 group-hover:scale-[1.18] pointer-events-none" 
+                  className="absolute inset-0 w-full h-full object-cover object-center scale-100 transition-transform duration-700 group-hover:scale-110 pointer-events-none" 
+                  loading="lazy"
                 />
               </div>
 
@@ -254,12 +370,19 @@ const Gallery = () => {
 
               {/* Hover text detail panels */}
               <div className="absolute inset-x-0 bottom-0 p-8 z-20 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out text-left">
-                <span className="text-[10px] font-bold text-neon-cyan uppercase tracking-widest block mb-1">
-                  {item.tag}
-                </span>
+                {item.tag && (
+                  <span className="text-[10px] font-bold text-neon-cyan uppercase tracking-widest block mb-1">
+                    {item.tag}
+                  </span>
+                )}
                 <h3 className="font-display text-xl font-extrabold text-white uppercase tracking-wide">
                   {item.title}
                 </h3>
+              </div>
+
+              {/* Desktop Zoom Corner Accent */}
+              <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                <FiMaximize2 size={14} />
               </div>
             </div>
           ))}
@@ -267,71 +390,104 @@ const Gallery = () => {
 
       </div>
 
-      {/* Lightbox Modal */}
+      {/* ========================================================================= */}
+      {/* LIGHTBOX MODAL (Touch-optimized for Mobile & Fullscreen for Desktop)     */}
+      {/* ========================================================================= */}
       {activeIndex !== null && galleryItems[activeIndex] && (
         <div 
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-md transition-all duration-300 animate-fade-in"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-between bg-black/95 backdrop-blur-xl transition-all duration-300 animate-fade-in p-4 sm:p-6"
           onClick={handleClose}
         >
-          {/* Close Button */}
-          <button 
-            onClick={handleClose}
-            className="absolute top-6 right-6 text-white/70 hover:text-white transition-all p-3 rounded-full bg-white/5 hover:bg-white/10 text-3xl focus:outline-none z-[60] cursor-pointer"
-            aria-label="Close Lightbox"
-          >
-            <IoCloseOutline />
-          </button>
+          {/* Top Bar: Counter & Close */}
+          <div className="w-full max-w-5xl flex items-center justify-between z-[60] pt-2" onClick={(e) => e.stopPropagation()}>
+            <div className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-mono text-white/90">
+              <span className="text-neon-lime font-bold">{activeIndex + 1}</span> / {galleryItems.length}
+            </div>
 
-          {/* Left / Prev Button */}
-          <button 
-            onClick={(e) => {
-              e.stopPropagation()
-              handlePrev()
-            }}
-            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-all p-3 rounded-full bg-white/5 hover:bg-white/10 text-3xl focus:outline-none z-[60] cursor-pointer hidden md:flex items-center justify-center"
-            aria-label="Previous Image"
-          >
-            <IoChevronBackOutline />
-          </button>
+            <button 
+              onClick={handleClose}
+              className="text-white hover:text-neon-lime transition-all p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-2xl focus:outline-none cursor-pointer"
+              aria-label="Close Lightbox"
+            >
+              <IoCloseOutline />
+            </button>
+          </div>
 
-          {/* Right / Next Button */}
-          <button 
-            onClick={(e) => {
-              e.stopPropagation()
-              handleNext()
-            }}
-            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-all p-3 rounded-full bg-white/5 hover:bg-white/10 text-3xl focus:outline-none z-[60] cursor-pointer hidden md:flex items-center justify-center"
-            aria-label="Next Image"
-          >
-            <IoChevronForwardOutline />
-          </button>
-
-          {/* Modal Content */}
+          {/* Center Image Container with Gestures */}
           <div 
-            className="relative max-w-[90%] max-h-[75vh] md:max-h-[80vh] flex flex-col items-center justify-center select-none"
+            className="relative w-full max-w-5xl flex-1 flex items-center justify-center my-auto select-none"
             onClick={(e) => e.stopPropagation()}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
+            {/* Desktop Left / Prev Button */}
+            <button 
+              onClick={(e) => {
+                e.stopPropagation()
+                handlePrev()
+              }}
+              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 text-white hover:text-neon-lime transition-all p-3.5 rounded-full bg-white/10 hover:bg-white/20 text-2xl focus:outline-none z-[60] cursor-pointer hidden sm:flex items-center justify-center backdrop-blur-md"
+              aria-label="Previous Image"
+            >
+              <IoChevronBackOutline />
+            </button>
+
+            {/* Active Image */}
             <img 
               src={galleryItems[activeIndex].img} 
               alt={galleryItems[activeIndex].title} 
-              className="max-w-full max-h-[70vh] md:max-h-[75vh] object-contain rounded-lg shadow-2xl transition-all duration-300 transform scale-100" 
+              className="max-w-full max-h-[65vh] sm:max-h-[75vh] object-contain rounded-2xl shadow-2xl shadow-black/80 transition-all duration-300" 
             />
-            
-            {/* Caption */}
-            <div className="mt-6 text-center max-w-xl px-4">
-              <span className="text-[10px] font-bold text-neon-cyan uppercase tracking-widest block mb-1">
-                {galleryItems[activeIndex].tag}
-              </span>
-              <h3 className="font-display text-lg md:text-xl font-black text-white uppercase tracking-wide">
+
+            {/* Desktop Right / Next Button */}
+            <button 
+              onClick={(e) => {
+                e.stopPropagation()
+                handleNext()
+              }}
+              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 text-white hover:text-neon-lime transition-all p-3.5 rounded-full bg-white/10 hover:bg-white/20 text-2xl focus:outline-none z-[60] cursor-pointer hidden sm:flex items-center justify-center backdrop-blur-md"
+              aria-label="Next Image"
+            >
+              <IoChevronForwardOutline />
+            </button>
+          </div>
+
+          {/* Bottom Bar (Captions & Mobile Navigation buttons) */}
+          <div 
+            className="w-full max-w-md mx-auto p-4 rounded-2xl bg-dark-surface/80 border border-white/10 backdrop-blur-md flex flex-col items-center justify-center gap-2.5 z-[60]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-center">
+              {galleryItems[activeIndex].tag && (
+                <span className="text-[10px] font-extrabold text-neon-cyan uppercase tracking-widest block mb-0.5">
+                  {galleryItems[activeIndex].tag}
+                </span>
+              )}
+              <h3 className="font-display text-sm sm:text-base font-black text-white uppercase tracking-wide">
                 {galleryItems[activeIndex].title}
               </h3>
-              <p className="text-gray-500 text-xs font-mono mt-2">
-                {activeIndex + 1} / {galleryItems.length}
-              </p>
+            </div>
+
+            {/* Mobile Nav Arrows Bar */}
+            <div className="flex sm:hidden items-center justify-center gap-6 w-full pt-1 border-t border-white/5">
+              <button
+                onClick={handlePrev}
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-white/10 text-white text-xs font-bold active:scale-95 transition-all"
+              >
+                <IoChevronBackOutline size={16} /> Prev
+              </button>
+              <span className="text-[11px] font-mono text-gray-400">
+                Swipe ↔
+              </span>
+              <button
+                onClick={handleNext}
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-white/10 text-white text-xs font-bold active:scale-95 transition-all"
+              >
+                Next <IoChevronForwardOutline size={16} />
+              </button>
             </div>
           </div>
+
         </div>
       )}
     </section>
