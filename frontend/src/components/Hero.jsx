@@ -9,6 +9,7 @@ import clientAlex from '../assets/client_alexander.webp'
 import clientDom from '../assets/client_dominic.webp'
 import clientVal from '../assets/client_valerie.webp'
 import coachSera from '../assets/coach_seraphina.webp'
+import gymVideo from '../assets/video/No matter where you are in your fitness journey_ there_s always another level to reach.__Push harder. Train smarter. Stay consistent._Because real progress (.mp4'
 
 import Magnetic from './Magnetic'
 
@@ -299,16 +300,18 @@ const Hero = () => {
           </button>
 
           <div
-            className="relative w-full max-w-4xl aspect-video rounded-3xl overflow-hidden border border-white/20 shadow-2xl bg-black"
+            className="relative w-full max-w-4xl aspect-video rounded-3xl overflow-hidden border border-white/20 shadow-2xl bg-black flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/gCzN_5p6Vag?autoplay=1&mute=0"
-              title="Gym Workout Trailer"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+            <video
+              className="w-full h-full object-contain"
+              src={gymVideo}
+              controls
+              autoPlay
+              playsInline
+            >
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
       )}
