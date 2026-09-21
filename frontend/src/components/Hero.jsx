@@ -293,18 +293,18 @@ const Hero = () => {
         >
           <button
             onClick={() => setIsVideoModalOpen(false)}
-            className="absolute top-6 right-6 text-white/70 hover:text-white transition-all p-3 rounded-full bg-white/10 hover:bg-white/20 text-3xl focus:outline-none z-[60] cursor-pointer"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/70 hover:text-white transition-all p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 text-2xl sm:text-3xl focus:outline-none z-[60] cursor-pointer"
             aria-label="Close Video Modal"
           >
             <IoCloseOutline />
           </button>
 
           <div
-            className="relative w-full max-w-4xl aspect-video rounded-3xl overflow-hidden border border-white/20 shadow-2xl bg-black flex items-center justify-center"
+            className="relative max-h-[85vh] max-w-[92vw] sm:max-w-md md:max-w-lg rounded-2xl sm:rounded-3xl overflow-hidden border border-white/20 shadow-2xl bg-black flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             <video
-              className="w-full h-full object-contain"
+              className="max-h-[85vh] w-auto max-w-full object-contain rounded-2xl sm:rounded-3xl"
               src={gymVideo}
               controls
               autoPlay
