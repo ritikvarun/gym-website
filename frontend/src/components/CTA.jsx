@@ -4,6 +4,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FiUser, FiPhone, FiMapPin, FiSend, FiCheckCircle, FiAlertTriangle, FiLoader, FiZap } from 'react-icons/fi'
 import gymFallback from '../assets/gym_hero_fallback.webp'
 import { API_URL } from '../config'
+import ImageWithSkeleton from './ImageWithSkeleton'
+import { getCachedSync, fetchWithCache } from '../utils/cache'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -29,20 +31,22 @@ const CTA = () => {
   const [submittedName, setSubmittedName] = useState('')
   const [submittedPlan, setSubmittedPlan] = useState('')
   const [submittedAmount, setSubmittedAmount] = useState('')
-  const [settings, setSettings] = useState({
-    basicPrice: "200",
-    basicPeriod: "1-Day Trial Pass",
-    standardPrice: "8,000",
-    standardPeriod: "for 6 months",
-    elitePrice: "12,000",
-    elitePeriod: "for 1 year",
-    upiId: "",
-    upiName: ""
-  })
+  const cachedSettings = getCachedSync('/api/settings')
+  const [settings, setSettings] = useState(() => ({
+    basicPrice: cachedSettings?.basicPrice || "200",
+    basicPeriod: cachedSettings?.basicPeriod || "1-Day Trial Pass",
+    standardPrice: cachedSettings?.standardPrice || "8,000",
+    standardPeriod: cachedSettings?.standardPeriod || "for 6 months",
+    elitePrice: cachedSettings?.elitePrice || "12,000",
+    elitePeriod: cachedSettings?.elitePeriod || "for 1 year",
+    upiId: cachedSettings?.upiId || "",
+    upiName: cachedSettings?.upiName || ""
+  }))
 
   useEffect(() => {
-    fetch(`${API_URL}/api/settings`)
-      .then(res => res.json())
+    if (getCachedSync('/api/settings')) return
+
+    fetchWithCache('/api/settings')
       .then(data => {
         if (data) {
           setSettings(prev => ({
@@ -344,9 +348,11 @@ const CTA = () => {
                       <p className="text-[10px] font-bold text-neon-lime uppercase tracking-widest mb-3">Scan to Pay via UPI</p>
                       
                       <div className="p-3 bg-white rounded-xl shadow-lg border border-neon-lime/30 mb-3">
-                        <img 
+                        <ImageWithSkeleton
                           src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiUrl)}`}
                           alt="UPI QR Code"
+                          loading="eager"
+                          wrapperClassName="relative w-[180px] h-[180px] rounded-lg overflow-hidden"
                           className="w-[180px] h-[180px]"
                         />
                       </div>

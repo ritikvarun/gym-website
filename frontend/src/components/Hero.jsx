@@ -12,6 +12,7 @@ import coachSera from '../assets/coach_seraphina.webp'
 import gymVideo from '../assets/video/No matter where you are in your fitness journey_ there_s always another level to reach.__Push harder. Train smarter. Stay consistent._Because real progress (.mp4'
 
 import Magnetic from './Magnetic'
+import { cacheImageUrl, preloadAndCacheImages } from '../utils/cache'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -89,9 +90,27 @@ const heroSlides = [
 
 const Hero = () => {
   const heroRef = useRef(null)
+  const slideImgRefs = useRef({})
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const [loadedSlides, setLoadedSlides] = useState({})
+
+  // Preload & cache hero slides for 30 minutes and detect already-cached images
+  useEffect(() => {
+    preloadAndCacheImages(heroSlides.map((s) => s.image))
+    heroSlides.forEach((slide, idx) => {
+      const el = slideImgRefs.current[idx]
+      if (el && el.complete && el.naturalWidth > 0) {
+        setLoadedSlides((prev) => (prev[idx] ? prev : { ...prev, [idx]: true }))
+      }
+    })
+  }, [])
+
+  const handleSlideImageLoad = (idx, url) => {
+    cacheImageUrl(url)
+    setLoadedSlides((prev) => (prev[idx] ? prev : { ...prev, [idx]: true }))
+  }
 
   // Auto carousel slider (5 seconds)
   useEffect(() => {
@@ -156,6 +175,12 @@ const Hero = () => {
     >
       {/* Background 4-Image Carousel with 100% Real Human Photography */}
       <div className="absolute inset-0 z-0">
+        {!loadedSlides[currentSlideIndex] && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 z-10 bg-[#0d0d11] skeleton-shimmer transition-opacity duration-500"
+          />
+        )}
         {heroSlides.map((slide, idx) => (
           <div
             key={slide.id}
@@ -164,9 +189,19 @@ const Hero = () => {
             }`}
           >
             <img
+              ref={(el) => {
+                slideImgRefs.current[idx] = el
+              }}
               src={slide.image}
               alt="Real Gym Athlete"
-              className="hero-bg-img w-full h-full object-cover object-center filter brightness-[0.85] contrast-[1.05] transform scale-100 transition-transform duration-1000"
+              loading={idx === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              fetchPriority={idx === 0 ? 'high' : 'auto'}
+              onLoad={() => handleSlideImageLoad(idx, slide.image)}
+              onError={() => handleSlideImageLoad(idx, slide.image)}
+              className={`hero-bg-img w-full h-full object-cover object-center filter brightness-[0.85] contrast-[1.05] transform scale-100 transition-all duration-1000 ${
+                loadedSlides[idx] ? 'opacity-100' : 'opacity-0'
+              }`}
             />
             {/* Lighter, natural gradient overlay for high photo clarity */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#08080a] via-transparent to-[#08080a]/60" />

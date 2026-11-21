@@ -2,44 +2,62 @@ import React, { useState, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FiCheck, FiArrowRight } from 'react-icons/fi'
-import { API_URL } from '../config'
+import { getCachedSync, fetchWithCache } from '../utils/cache'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const defaultPricingSettings = {
+  basicPrice: "200",
+  basicPeriod: "1-Day Trial Pass",
+  monthlyPrice: "3,000",
+  monthlyPeriod: "for 1 month",
+  standardPrice: "8,000",
+  standardPeriod: "for 6 months",
+  elitePrice: "12,000",
+  elitePeriod: "for 1 year"
+}
+
+const mapPricingSettings = (data, prev = defaultPricingSettings) => ({
+  ...prev,
+  basicPrice: data.basicPrice || prev.basicPrice,
+  basicPeriod: data.basicPeriod || prev.basicPeriod,
+  monthlyPrice: data.monthlyPrice || prev.monthlyPrice,
+  monthlyPeriod: data.monthlyPeriod || prev.monthlyPeriod,
+  standardPrice: data.standardPrice || prev.standardPrice,
+  standardPeriod: data.standardPeriod || prev.standardPeriod,
+  elitePrice: data.elitePrice || prev.elitePrice,
+  elitePeriod: data.elitePeriod || prev.elitePeriod
+})
 
 const Pricing = () => {
   const sectionRef = useRef(null)
   const cardsContainerRef = useRef(null)
 
-  const [settings, setSettings] = useState({
-    basicPrice: "200",
-    basicPeriod: "1-Day Trial Pass",
-    monthlyPrice: "3,000",
-    monthlyPeriod: "for 1 month",
-    standardPrice: "8,000",
-    standardPeriod: "for 6 months",
-    elitePrice: "12,000",
-    elitePeriod: "for 1 year"
-  })
+  const cachedSettings = getCachedSync('/api/settings')
+  const [settings, setSettings] = useState(() =>
+    cachedSettings ? mapPricingSettings(cachedSettings) : defaultPricingSettings
+  )
+  const [settingsLoaded, setSettingsLoaded] = useState(() => Boolean(cachedSettings))
 
   useEffect(() => {
-    fetch(`${API_URL}/api/settings`)
-      .then(res => res.json())
+    const cached = getCachedSync('/api/settings')
+    if (cached) {
+      setSettings(prev => mapPricingSettings(cached, prev))
+      setSettingsLoaded(true)
+      return
+    }
+
+    fetchWithCache('/api/settings')
       .then(data => {
         if (data) {
-          setSettings(prev => ({
-            ...prev,
-            basicPrice: data.basicPrice || prev.basicPrice,
-            basicPeriod: data.basicPeriod || prev.basicPeriod,
-            monthlyPrice: data.monthlyPrice || prev.monthlyPrice,
-            monthlyPeriod: data.monthlyPeriod || prev.monthlyPeriod,
-            standardPrice: data.standardPrice || prev.standardPrice,
-            standardPeriod: data.standardPeriod || prev.standardPeriod,
-            elitePrice: data.elitePrice || prev.elitePrice,
-            elitePeriod: data.elitePeriod || prev.elitePeriod
-          }))
+          setSettings(prev => mapPricingSettings(data, prev))
         }
+        setSettingsLoaded(true)
       })
-      .catch(err => console.log("Using default fallback pricing settings:", err.message))
+      .catch(err => {
+        console.log("Using default fallback pricing settings:", err.message)
+        setSettingsLoaded(true)
+      })
   }, [])
 
   useEffect(() => {
@@ -214,15 +232,24 @@ const Pricing = () => {
 
               {/* Price Tag */}
               <div className="flex flex-col mb-2">
-                <div className="flex items-baseline">
-                  <span className="text-lg font-bold text-white mr-1">₹</span>
-                  <span className="font-display text-4xl md:text-5xl font-black text-white tracking-tight leading-none">
-                    {plan.price}
-                  </span>
-                </div>
-                <span className="text-[11px] text-gray-500 font-semibold uppercase tracking-wider mt-1">
-                  {plan.period}
-                </span>
+                {!settingsLoaded ? (
+                  <div className="space-y-2 py-1">
+                    <div className="h-10 w-28 rounded-lg bg-white/10 skeleton-shimmer" />
+                    <div className="h-3 w-20 rounded bg-white/10 skeleton-shimmer" />
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-baseline">
+                      <span className="text-lg font-bold text-white mr-1">₹</span>
+                      <span className="font-display text-4xl md:text-5xl font-black text-white tracking-tight leading-none">
+                        {plan.price}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-gray-500 font-semibold uppercase tracking-wider mt-1">
+                      {plan.period}
+                    </span>
+                  </>
+                )}
               </div>
 
               {/* Description */}

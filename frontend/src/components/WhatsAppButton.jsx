@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { FaWhatsapp } from 'react-icons/fa'
-import { API_URL } from '../config'
+import { getCachedSync, fetchWithCache } from '../utils/cache'
 
 const WhatsAppButton = () => {
-  const [phoneNumber, setPhoneNumber] = useState('8439919640')
+  const cachedSettings = getCachedSync('/api/settings')
+  const [phoneNumber, setPhoneNumber] = useState(() =>
+    cachedSettings?.ownerPhone || cachedSettings?.receptionPhone || cachedSettings?.contactPhone || '8439919640'
+  )
   const [showTooltip, setShowTooltip] = useState(false)
 
   useEffect(() => {
-    fetch(`${API_URL}/api/settings`)
-      .then(res => res.json())
+    if (getCachedSync('/api/settings')) return
+
+    fetchWithCache('/api/settings')
       .then(data => {
         if (data && (data.ownerPhone || data.receptionPhone || data.contactPhone)) {
           setPhoneNumber(data.ownerPhone || data.receptionPhone || data.contactPhone)

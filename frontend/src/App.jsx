@@ -12,14 +12,15 @@ import Footer from './components/Footer'
 import Preloader from './components/Preloader'
 import CustomCursor from './components/CustomCursor'
 import WhatsAppButton from './components/WhatsAppButton'
+import { isCacheWarm } from './utils/cache'
 
 const App = () => {
-  const [loading, setLoading] = React.useState(true)
+  const [loading, setLoading] = React.useState(() => !isCacheWarm())
 
   return (
     <>
       <CustomCursor />
-      <Preloader onComplete={() => setLoading(false)} />
+      {loading && <Preloader onComplete={() => setLoading(false)} />}
       <div className={`bg-dark-bg min-h-screen text-gray-100 selection:bg-neon-lime selection:text-black transition-opacity duration-1000 ${
         loading ? 'opacity-0' : 'opacity-100'
       }`}>

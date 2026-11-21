@@ -106,37 +106,23 @@ html.light .fixed.bg-black\/95 {
   backdrop-filter: blur(24px) !important;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #08080a;
-}
-::-webkit-scrollbar-thumb {
-  background: #1f1f27;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #ccff00;
+/* Skeleton Shimmer Animation */
+@keyframes mc-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-  background-color: #08080a;
-  overflow-x: hidden;
-  cursor: none;
-  transition: background-color 0.4s ease, color 0.4s ease;
-}
-
-body {
-  font-family: var(--font-sans);
-  overflow-x: hidden;
-  cursor: none;
-  transition: background-color 0.4s ease, color 0.4s ease;
-}
-
-/* Hide default cursor on all interactive elements too */
-a, button, [role="button"], input, textarea, select, label, .cursor-pointer {
-  cursor: none !important;
+.skeleton-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.02) 20%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.02) 80%
+  );
+  background-size: 200% 100%;
+  animation: mc-shimmer 1.5s infinite linear;
 }

@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { FiInstagram, FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi'
-import { API_URL } from '../config'
+import { getCachedSync, fetchWithCache } from '../utils/cache'
+
+const defaultFooterSettings = {
+  gymName: "Muscle Craft Fitness Club",
+  contactEmail: "info@musclecraft.com",
+  contactPhone: "+1 (555) 900-MCFC",
+  contactAddress: "128 Peak Avenue, Suite 400, Beverly Hills, CA 90210",
+  instagramId: "musclecraftfitness",
+  ownerPhone: "8439919640",
+  receptionPhone: ""
+}
 
 const Footer = () => {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
-  const [settings, setSettings] = useState({
-    gymName: "Muscle Craft Fitness Club",
-    contactEmail: "info@musclecraft.com",
-    contactPhone: "+1 (555) 900-MCFC",
-    contactAddress: "128 Peak Avenue, Suite 400, Beverly Hills, CA 90210",
-    instagramId: "musclecraftfitness",
-    ownerPhone: "8439919640",
-    receptionPhone: ""
-  })
+  const cachedSettings = getCachedSync('/api/settings')
+  const [settings, setSettings] = useState(() =>
+    cachedSettings && cachedSettings.gymName ? cachedSettings : defaultFooterSettings
+  )
 
   useEffect(() => {
-    fetch(`${API_URL}/api/settings`)
-      .then(res => res.json())
+    if (getCachedSync('/api/settings')) return
+
+    fetchWithCache('/api/settings')
       .then(data => {
         if (data && data.gymName) {
           setSettings(data)

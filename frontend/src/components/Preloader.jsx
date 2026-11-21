@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { gsap } from 'gsap'
+import { isCacheWarm, markCacheWarm } from '../utils/cache'
 
 const Preloader = ({ onComplete }) => {
   const [progress, setProgress] = useState(0)
@@ -9,6 +10,13 @@ const Preloader = ({ onComplete }) => {
   const contentRef = useRef(null)
 
   useEffect(() => {
+    // Skip preloader if 30-minute local cache is still warm
+    if (isCacheWarm()) {
+      document.body.style.overflow = ''
+      if (onComplete) onComplete()
+      return
+    }
+
     // Disable body scroll during preload
     document.body.style.overflow = 'hidden'
 
@@ -16,11 +24,12 @@ const Preloader = ({ onComplete }) => {
     const obj = { val: 0 }
     const tl = gsap.timeline({
       onComplete: () => {
+        markCacheWarm()
         // Slide out animation
         const exitTl = gsap.timeline({
           onComplete: () => {
             // Restore body scroll and trigger callback
-            document.body.style.overflow = 'auto'
+            document.body.style.overflow = ''
             if (onComplete) onComplete()
           }
         })
@@ -28,20 +37,20 @@ const Preloader = ({ onComplete }) => {
         exitTl.to(contentRef.current, {
           opacity: 0,
           y: -30,
-          duration: 0.6,
+          duration: 0.45,
           ease: 'power3.in'
         })
         .to(preloaderRef.current, {
           yPercent: -100,
-          duration: 0.85,
+          duration: 0.65,
           ease: 'power4.inOut'
-        }, '-=0.2')
+        }, '-=0.15')
       }
     })
 
     tl.to(obj, {
       val: 100,
-      duration: 2.2,
+      duration: 1.2,
       ease: 'power1.inOut',
       onUpdate: () => {
         const currentVal = Math.floor(obj.val)
@@ -55,9 +64,13 @@ const Preloader = ({ onComplete }) => {
     // Animate progress bar width matching progress
     gsap.to(barRef.current, {
       width: '100%',
-      duration: 2.2,
+      duration: 1.2,
       ease: 'power1.inOut'
     })
+
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [onComplete])
 
   return (

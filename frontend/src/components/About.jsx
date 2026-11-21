@@ -3,45 +3,64 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FiAward, FiCpu, FiTarget, FiUsers } from 'react-icons/fi'
 import aboutGym from '../assets/about_gym.webp'
-import { API_URL } from '../config'
+import ImageWithSkeleton from './ImageWithSkeleton'
+import { getCachedSync, fetchWithCache, preloadAndCacheImages } from '../utils/cache'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
+
+const defaultAboutSettings = {
+  aboutYears: "12",
+  aboutMembers: "8500",
+  aboutCoaches: "24",
+  aboutPhoto: "",
+  estYear: "2014",
+  estTagline: "12 Years of Athletic Innovation"
+}
+
+const mapAboutSettings = (data) => ({
+  aboutYears: data.aboutYears || "12",
+  aboutMembers: data.aboutMembers || "8500",
+  aboutCoaches: data.aboutCoaches || "24",
+  aboutPhoto: data.aboutPhoto || "",
+  estYear: data.estYear || "2014",
+  estTagline: data.estTagline || "12 Years of Athletic Innovation"
+})
 
 const About = () => {
   const sectionRef = useRef(null)
   const imageRef = useRef(null)
   const containerRef = useRef(null)
 
-  const [settings, setSettings] = useState({
-    aboutYears: "12",
-    aboutMembers: "8500",
-    aboutCoaches: "24",
-    aboutPhoto: "",
-    estYear: "2014",
-    estTagline: "12 Years of Athletic Innovation"
-  })
-  const [settingsLoaded, setSettingsLoaded] = useState(false)
+  const cachedSettings = getCachedSync('/api/settings')
+  const [settings, setSettings] = useState(() =>
+    cachedSettings ? mapAboutSettings(cachedSettings) : defaultAboutSettings
+  )
+  const [settingsLoaded, setSettingsLoaded] = useState(() => Boolean(cachedSettings))
 
-  // Fetch settings from local API
+  // Fetch settings with 30-min local cache
   useEffect(() => {
-    fetch(`${API_URL}/api/settings`)
-      .then(res => res.json())
+    const cached = getCachedSync('/api/settings')
+    if (cached) {
+      const mapped = mapAboutSettings(cached)
+      setSettings(mapped)
+      setSettingsLoaded(true)
+      preloadAndCacheImages([mapped.aboutPhoto || aboutGym])
+      return
+    }
+
+    fetchWithCache('/api/settings')
       .then(data => {
         if (data) {
-          setSettings({
-            aboutYears: data.aboutYears || "12",
-            aboutMembers: data.aboutMembers || "8500",
-            aboutCoaches: data.aboutCoaches || "24",
-            aboutPhoto: data.aboutPhoto || "",
-            estYear: data.estYear || "2014",
-            estTagline: data.estTagline || "12 Years of Athletic Innovation"
-          })
+          const mapped = mapAboutSettings(data)
+          setSettings(mapped)
+          preloadAndCacheImages([mapped.aboutPhoto || aboutGym])
         }
         setSettingsLoaded(true)
       })
       .catch(err => {
         console.log("Using default fallback about stats:", err.message)
+        preloadAndCacheImages([aboutGym])
         setSettingsLoaded(true)
       })
   }, [])
@@ -159,10 +178,12 @@ const About = () => {
             
             {/* Image Container with Zoom Animation */}
             <div className="w-full h-full rounded-2xl overflow-hidden shadow-2xl relative border border-white/10">
-              <img 
-                ref={imageRef}
-                src={settings.aboutPhoto || aboutGym} 
-                alt="Muscle Craft Gym Interior" 
+              <ImageWithSkeleton
+                imgRef={imageRef}
+                src={settings.aboutPhoto || aboutGym}
+                fallbackSrc={aboutGym}
+                alt="Muscle Craft Gym Interior"
+                wrapperClassName="w-full h-full relative overflow-hidden"
                 className="w-full h-full object-cover object-center scale-125"
               />
             </div>

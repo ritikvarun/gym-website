@@ -5,86 +5,98 @@ import { FiInstagram, FiTwitter, FiAward } from 'react-icons/fi'
 import coachViktor from '../assets/coach_viktor.webp'
 import coachSeraphina from '../assets/coach_seraphina.webp'
 import coachMarcus from '../assets/coach_marcus.webp'
-import { API_URL } from '../config'
+import ImageWithSkeleton from './ImageWithSkeleton'
+import { TrainersSkeleton } from './Skeletons'
+import { getCachedSync, fetchWithCache, preloadAndCacheImages } from '../utils/cache'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
 
+const fallbackCoaches = [
+  {
+    name: 'Viktor Vance',
+    role: 'Strength & Hypertrophy Director',
+    exp: '9 Yrs Exp',
+    instaHandle: '@viktor_vance',
+    image: coachViktor,
+    accentColor: 'text-neon-lime border-neon-lime/20',
+    badgeBg: 'bg-neon-lime/10',
+    glow: 'shadow-neon-lime/5 hover:shadow-neon-lime/20',
+    borderColor: 'group-hover:border-neon-lime/30',
+    socials: { instagram: 'https://instagram.com/viktor_vance', twitter: '#' },
+    certs: [
+      'CSCS (Certified Strength & Conditioning Specialist)',
+      'NASM-PES (Performance Enhancement)',
+      'FMS Level 2 Functional Movement Screen'
+    ]
+  },
+  {
+    name: 'Seraphina Sterling',
+    role: 'Metabolic & Biokinetics Coach',
+    exp: '7 Yrs Exp',
+    instaHandle: '@seraphina_fit',
+    image: coachSeraphina,
+    accentColor: 'text-neon-cyan border-neon-cyan/20',
+    badgeBg: 'bg-neon-cyan/10',
+    glow: 'shadow-neon-cyan/5 hover:shadow-neon-cyan/20',
+    borderColor: 'group-hover:border-neon-cyan/30',
+    socials: { instagram: 'https://instagram.com/seraphina_fit', twitter: '#' },
+    certs: [
+      'B.Sc. Exercise & Sports Science',
+      'NASM-CES (Corrective Exercise)',
+      'EXOS Phase 1 Performance Coaching'
+    ]
+  },
+  {
+    name: 'Marcus Drake',
+    role: 'Olympic Weightlifting Coordinator',
+    exp: '11 Yrs Exp',
+    instaHandle: '@marcus_drake',
+    image: coachMarcus,
+    accentColor: 'text-neon-pink border-neon-pink/20',
+    badgeBg: 'bg-neon-pink/10',
+    glow: 'shadow-neon-pink/5 hover:shadow-neon-pink/20',
+    borderColor: 'group-hover:border-neon-pink/30',
+    socials: { instagram: 'https://instagram.com/marcus_drake', twitter: '#' },
+    certs: [
+      'USAW Level 2 Weightlifting Coach',
+      'CSCS (Strength & Conditioning Specialist)',
+      'Precision Nutrition Level 2 Certified'
+    ]
+  }
+]
+
 const Trainers = () => {
   const sectionRef = useRef(null)
   const cardsContainerRef = useRef(null)
-  const [coaches, setCoaches] = useState([])
-  const [dataLoaded, setDataLoaded] = useState(false)
-
-  const fallbackCoaches = [
-    {
-      name: 'Viktor Vance',
-      role: 'Strength & Hypertrophy Director',
-      exp: '9 Yrs Exp',
-      instaHandle: '@viktor_vance',
-      image: coachViktor,
-      accentColor: 'text-neon-lime border-neon-lime/20',
-      badgeBg: 'bg-neon-lime/10',
-      glow: 'shadow-neon-lime/5 hover:shadow-neon-lime/20',
-      borderColor: 'group-hover:border-neon-lime/30',
-      socials: { instagram: 'https://instagram.com/viktor_vance', twitter: '#' },
-      certs: [
-        'CSCS (Certified Strength & Conditioning Specialist)',
-        'NASM-PES (Performance Enhancement)',
-        'FMS Level 2 Functional Movement Screen'
-      ]
-    },
-    {
-      name: 'Seraphina Sterling',
-      role: 'Metabolic & Biokinetics Coach',
-      exp: '7 Yrs Exp',
-      instaHandle: '@seraphina_fit',
-      image: coachSeraphina,
-      accentColor: 'text-neon-cyan border-neon-cyan/20',
-      badgeBg: 'bg-neon-cyan/10',
-      glow: 'shadow-neon-cyan/5 hover:shadow-neon-cyan/20',
-      borderColor: 'group-hover:border-neon-cyan/30',
-      socials: { instagram: 'https://instagram.com/seraphina_fit', twitter: '#' },
-      certs: [
-        'B.Sc. Exercise & Sports Science',
-        'NASM-CES (Corrective Exercise)',
-        'EXOS Phase 1 Performance Coaching'
-      ]
-    },
-    {
-      name: 'Marcus Drake',
-      role: 'Olympic Weightlifting Coordinator',
-      exp: '11 Yrs Exp',
-      instaHandle: '@marcus_drake',
-      image: coachMarcus,
-      accentColor: 'text-neon-pink border-neon-pink/20',
-      badgeBg: 'bg-neon-pink/10',
-      glow: 'shadow-neon-pink/5 hover:shadow-neon-pink/20',
-      borderColor: 'group-hover:border-neon-pink/30',
-      socials: { instagram: 'https://instagram.com/marcus_drake', twitter: '#' },
-      certs: [
-        'USAW Level 2 Weightlifting Coach',
-        'CSCS (Strength & Conditioning Specialist)',
-        'Precision Nutrition Level 2 Certified'
-      ]
-    }
-  ]
+  const cachedTrainers = getCachedSync('/api/trainers')
+  const [coaches, setCoaches] = useState(() =>
+    cachedTrainers ? (cachedTrainers.length > 0 ? cachedTrainers : fallbackCoaches) : []
+  )
+  const [dataLoaded, setDataLoaded] = useState(() => Boolean(cachedTrainers))
 
   useEffect(() => {
-    fetch(`${API_URL}/api/trainers`)
-      .then(res => res.json())
+    const cached = getCachedSync('/api/trainers')
+    if (cached) {
+      const items = cached.length > 0 ? cached : fallbackCoaches
+      setCoaches(items)
+      setDataLoaded(true)
+      preloadAndCacheImages(items.map((c) => c.image))
+      return
+    }
+
+    fetchWithCache('/api/trainers')
       .then(data => {
-        if (data && data.length > 0) {
-          setCoaches(data)
-        } else {
-          setCoaches(fallbackCoaches)
-        }
+        const items = data && data.length > 0 ? data : fallbackCoaches
+        setCoaches(items)
         setDataLoaded(true)
+        preloadAndCacheImages(items.map((c) => c.image))
       })
       .catch(err => {
         console.log("Using default fallback coaches:", err.message)
         setCoaches(fallbackCoaches)
         setDataLoaded(true)
+        preloadAndCacheImages(fallbackCoaches.map((c) => c.image))
       })
   }, [])
 
@@ -157,6 +169,9 @@ const Trainers = () => {
         </div>
 
         {/* Profiles Grid */}
+        {!dataLoaded ? (
+          <TrainersSkeleton />
+        ) : (
         <div 
           ref={cardsContainerRef}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto"
@@ -174,10 +189,11 @@ const Trainers = () => {
                 className={`relative group aspect-[3/4] rounded-[2.5rem] overflow-hidden border border-white/5 bg-dark-surface shadow-2xl transition-all duration-500 hover:-translate-y-2 select-none max-w-sm mx-auto w-full md:max-w-none ${coach.glow} ${coach.borderColor}`}
               >
                 {/* Profile Photo */}
-                <img 
-                  src={coach.image} 
-                  alt={coach.name} 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
+                <ImageWithSkeleton
+                  src={coach.image}
+                  alt={coach.name}
+                  wrapperClassName="absolute inset-0 w-full h-full overflow-hidden"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
                 />
 
                 {/* Small Elegant Instagram Icon (Bottom Right, Only if Insta ID exists) */}
@@ -246,6 +262,7 @@ const Trainers = () => {
             )
           })}
         </div>
+        )}
 
       </div>
     </section>

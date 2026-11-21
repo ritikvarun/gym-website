@@ -20,6 +20,8 @@ import functionalPlyoImg from '../assets/equipment_functional_plyo.jpg'
 import treadmillsImg from '../assets/equipment_treadmills.jpg'
 import smithRackImg from '../assets/equipment_smith_rack.jpg'
 import functionalV2Img from '../assets/equipment_functional_v2.jpg'
+import ImageWithSkeleton from './ImageWithSkeleton'
+import { preloadAndCacheImages } from '../utils/cache'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -227,6 +229,11 @@ const Equipments = () => {
     ? equipmentItems 
     : equipmentItems.filter(item => item.category === activeCategory)
 
+  // Warm equipment image cache for 30 minutes
+  useEffect(() => {
+    preloadAndCacheImages(equipmentItems.map((item) => item.img))
+  }, [])
+
   // Lightbox navigation handlers
   const openModal = (item, index) => {
     setSelectedItem(item)
@@ -387,12 +394,11 @@ const Equipments = () => {
             >
               {/* Image Container */}
               <div className="relative w-full h-64 sm:h-72 overflow-hidden bg-black/40">
-                <img
+                <ImageWithSkeleton
                   src={item.img}
+                  fallbackSrc={item.fallbackUrl}
                   alt={item.name}
-                  onError={(e) => {
-                    e.target.src = item.fallbackUrl
-                  }}
+                  wrapperClassName="relative w-full h-full overflow-hidden"
                   className="w-full h-full object-cover object-center transform scale-100 group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
                 
@@ -500,12 +506,12 @@ const Equipments = () => {
           >
             {/* Left Image Side */}
             <div className="w-full lg:w-1/2 relative bg-black/60 min-h-[260px] sm:min-h-[340px] flex items-center justify-center overflow-hidden">
-              <img
+              <ImageWithSkeleton
                 src={selectedItem.img}
+                fallbackSrc={selectedItem.fallbackUrl}
                 alt={selectedItem.name}
-                onError={(e) => {
-                  e.target.src = selectedItem.fallbackUrl
-                }}
+                loading="eager"
+                wrapperClassName="relative w-full h-full min-h-[260px] sm:min-h-[340px]"
                 className="w-full h-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0f] via-transparent to-transparent lg:hidden" />

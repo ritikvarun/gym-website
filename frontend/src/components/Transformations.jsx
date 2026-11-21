@@ -12,7 +12,9 @@ import beforeJulian from '../assets/before_julian.png'
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
 
-import { API_URL } from '../config'
+import ImageWithSkeleton from './ImageWithSkeleton'
+import { TransformationsSkeleton } from './Skeletons'
+import { getCachedSync, fetchWithCache, preloadAndCacheImages } from '../utils/cache'
 
 const BeforeAfterSlider = ({ beforeImg, afterImg, accentColor }) => {
   const [sliderPos, setSliderPos] = useState(50)
@@ -45,28 +47,32 @@ const BeforeAfterSlider = ({ beforeImg, afterImg, accentColor }) => {
     >
       {/* Before Image: Full color */}
       <div className="absolute inset-0">
-        <img 
-          src={beforeImg} 
-          alt="Before Transformation" 
-          className="w-full h-full object-cover pointer-events-none" 
+        <ImageWithSkeleton
+          src={beforeImg}
+          alt="Before Transformation"
+          loading="eager"
+          wrapperClassName="w-full h-full relative"
+          className="w-full h-full object-cover pointer-events-none"
         />
-        <div className="absolute top-6 left-6 bg-black/75 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-widest text-gray-400 border border-white/5">
+        <div className="absolute top-6 left-6 bg-black/75 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-widest text-gray-400 border border-white/5 z-20">
           BEFORE
         </div>
       </div>
 
       {/* After Image: Clipped overlay */}
       <div 
-        className="absolute inset-0 overflow-hidden" 
+        className="absolute inset-0 overflow-hidden z-10" 
         style={{ clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)` }}
       >
-        <img 
-          src={afterImg} 
-          alt="After Transformation" 
-          className="w-full h-full object-cover pointer-events-none" 
+        <ImageWithSkeleton
+          src={afterImg}
+          alt="After Transformation"
+          loading="eager"
+          wrapperClassName="w-full h-full relative"
+          className="w-full h-full object-cover pointer-events-none"
         />
         <div 
-          className="absolute top-6 right-6 bg-black/75 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-widest border"
+          className="absolute top-6 right-6 bg-black/75 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-widest border z-20"
           style={{ borderColor: `${accentColor}30`, color: accentColor }}
         >
           AFTER
@@ -151,21 +157,42 @@ const fallbackStories = [
 ]
 
 const Transformations = () => {
-  const [stories, setStories] = useState(fallbackStories)
+  const cachedStories = getCachedSync('/api/transformations')
+  const [stories, setStories] = useState(() =>
+    cachedStories ? (cachedStories.length > 0 ? cachedStories : fallbackStories) : fallbackStories
+  )
+  const [dataLoaded, setDataLoaded] = useState(() => Boolean(cachedStories))
   const [activeSlide, setActiveSlide] = useState(0)
   const sectionRef = useRef(null)
   const cardRef = useRef(null)
 
   useEffect(() => {
-    fetch(`${API_URL}/api/transformations`)
-      .then(res => res.json())
+    const warmStories = (list) => {
+      const urls = list.flatMap((s) => [s.beforeImage, s.afterImage, s.image])
+      preloadAndCacheImages(urls)
+    }
+
+    const cached = getCachedSync('/api/transformations')
+    if (cached) {
+      const list = cached.length > 0 ? cached : fallbackStories
+      setStories(list)
+      setDataLoaded(true)
+      warmStories(list)
+      return
+    }
+
+    fetchWithCache('/api/transformations')
       .then(data => {
-        if (data && data.length > 0) {
-          setStories(data)
-        }
+        const list = data && data.length > 0 ? data : fallbackStories
+        setStories(list)
+        setDataLoaded(true)
+        warmStories(list)
       })
       .catch(err => {
         console.log("Using default fallback stories:", err.message)
+        setStories(fallbackStories)
+        setDataLoaded(true)
+        warmStories(fallbackStories)
       })
   }, [])
 
@@ -249,6 +276,9 @@ const Transformations = () => {
         </div>
 
         {/* Transitioning Card Container */}
+        {!dataLoaded ? (
+          <TransformationsSkeleton />
+        ) : (
         <div ref={cardRef} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           
           {/* Left Side: BeforeAfterSlider widget */}
@@ -352,6 +382,7 @@ const Transformations = () => {
 
           </div>
         </div>
+        )}
 
       </div>
     </section>
